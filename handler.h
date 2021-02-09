@@ -6,13 +6,13 @@
 #include <map>
 #include <Windows.h>
 
-LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
+//LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
 
 class Handler
 {
 public:
-	HHOOK m_hHook;
-	HANDLE m_handle;
+	//HHOOK m_hHook;
+	//HANDLE m_handle;
 	std::map<int, bool>* m_pKeys = new std::map<int, bool>;
 public:
 
@@ -30,5 +30,5 @@ public:
 	Handler();
 	~Handler();
 
-	static void handlerThread();
+	//static void handlerThread();
 };

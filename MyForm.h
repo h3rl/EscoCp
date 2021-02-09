@@ -29,7 +29,7 @@ namespace EscoCp {
 	public:
 		HWND hWnd;
 
-		Handler* hHandler;
+		Handler* hHandler = nullptr;
 
 		std::map<int, bool>* keys;
 		Config* cfg;
@@ -781,8 +781,8 @@ namespace EscoCp {
 
 	public: void startThreads() {
 		//htRecoil = gcnew Thread(gcnew ThreadStart(this, &EscoCp::MyForm::recoilThread));
-		htEvents = gcnew Thread(gcnew ThreadStart(this, &EscoCp::MyForm::eventsThread));
-		htEvents->Start();
+		//htEvents = gcnew Thread(gcnew ThreadStart(this, &EscoCp::MyForm::eventsThread));
+		//htEvents->Start();
 	}
 
 	public: void recoilThread()
