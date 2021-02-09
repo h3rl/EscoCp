@@ -7,6 +7,8 @@ using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Threading;
 
+LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
+
 void handlerThread()
 {
 	MSG msg{ 0 };
@@ -15,7 +17,7 @@ void handlerThread()
 	return;
 }
 
-Handler* pHandler = new Handler();
+Handler* pHandler = nullptr;
 
 void Main(array<String^>^ args)
 {
@@ -27,6 +29,7 @@ void Main(array<String^>^ args)
 	HHOOK hook = ::SetWindowsHookExA(WH_KEYBOARD_LL, (HOOKPROC)KeyboardProc, NULL, NULL);
 	HANDLE hHandle = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)handlerThread, 0, 0, 0);
 
+	pHandler = new Handler();
 	EscoCp::MyForm^ form = gcnew EscoCp::MyForm();
 	form->setHandler(pHandler);
 	form->startThreads();
