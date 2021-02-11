@@ -50,6 +50,8 @@ namespace EscoCp {
 	private: System::Windows::Forms::Label^ label12;
 	private: System::Windows::Forms::Label^ label5;
 
+	private: delegate void SafeCallDelegate(String text);
+
 
 
 	public:
@@ -62,8 +64,6 @@ namespace EscoCp {
 			this->InitializeComponent();
 
 			hWnd = static_cast<HWND>(this->Handle.ToPointer());
-
-			keys = new std::map<int, bool>;
 
 			cfg = new Config();
 			cfg->readConfigFile();
@@ -781,8 +781,8 @@ namespace EscoCp {
 
 	public: void startThreads() {
 		//htRecoil = gcnew Thread(gcnew ThreadStart(this, &EscoCp::MyForm::recoilThread));
-		//htEvents = gcnew Thread(gcnew ThreadStart(this, &EscoCp::MyForm::eventsThread));
-		//htEvents->Start();
+		htEvents = gcnew Thread(gcnew ThreadStart(this, &EscoCp::MyForm::eventsThread));
+		htEvents->Start();
 	}
 
 	public: void recoilThread()
@@ -800,6 +800,30 @@ namespace EscoCp {
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 	}
+	private: void Button1_Click(object sender, EventArgs e)
+	{
+		thread2 = new Thread(new ThreadStart(SetText));
+		thread2.Start();
+		Thread.Sleep(1000);
+	}
+
+	private: void WriteTextSafe(String text)
+	{
+		if (btnActivate->InvokeRequired)
+		{
+			auto d = gcnew SafeCallDelegate(this,WriteTextSafe);
+			btnActivate->Invoke(d, text);
+		}
+		else
+		{
+			btnActivate->Text = text;
+		}
+	}
+
+	private void SetText()
+	{
+		WriteTextSafe("This text was set safely.");
+	}
 	public: void eventsThread() {
 		bool waitingforkey = false;
 		while (1) {
@@ -807,13 +831,11 @@ namespace EscoCp {
 				waitingforkey = true;
 			}
 			if (waitingforkey && !hHandler->m_bCaptureKey) {
-				TCHAR nBuffer[128];
-				GetKeyNameText(hHandler->m_clParam, nBuffer, sizeof(nBuffer));
-				_D(nBuffer);
-
 				//currentProfile->activateKey = hHandler->m_;
-
-				btnActivate->Text = "got it";
+				//_D(hHandler->m_dCapturedKey);
+				std::string str = vkToString(hHandler->m_dCapturedKey);
+				//this->btnActivate->Text = str;
+				//btnActivate->Text = System::UInt32(hHandler->m_dCapturedKey).ToString();
 				waitingforkey = false;
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));

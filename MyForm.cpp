@@ -4,18 +4,9 @@
 #include <thread>
 
 using namespace System;
+using namespace System::Text;
 using namespace System::Windows::Forms;
 using namespace System::Threading;
-
-LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
-
-void handlerThread()
-{
-	MSG msg{ 0 };
-	//our application loop
-	while (GetMessage(&msg, NULL, 0, 0) != 0);
-	return;
-}
 
 Handler* pHandler = nullptr;
 
@@ -26,9 +17,6 @@ void Main(array<String^>^ args)
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
-	HHOOK hook = ::SetWindowsHookExA(WH_KEYBOARD_LL, (HOOKPROC)KeyboardProc, NULL, NULL);
-	HANDLE hHandle = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)handlerThread, 0, 0, 0);
-
 	pHandler = new Handler();
 	EscoCp::MyForm^ form = gcnew EscoCp::MyForm();
 	form->setHandler(pHandler);
@@ -38,11 +26,12 @@ void Main(array<String^>^ args)
 }
 
 LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
-	_D("CALLED");
-	if (nCode < 0)
+	if (pHandler == NULL) {
 		return NULL;
-	if (pHandler == NULL)
-		return NULL;
+	}
+	if (nCode < 0) {
+		return CallNextHookEx(pHandler->m_hHook,nCode,wParam,lParam);
+	}
 
 	LPKBDLLHOOKSTRUCT keyStruct = (LPKBDLLHOOKSTRUCT)lParam;
 
@@ -51,17 +40,19 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 	}
 	else {
 		DWORD key = keyStruct->vkCode;
+		//insert if key not in map
+		if (!pHandler->m_pKeys->count(key)) {
+			pHandler->m_pKeys->insert({ key,false });
+		}
 		switch (wParam)
 		{
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN: {
-
 			if (!pHandler->m_pKeys->at(key)) {
 				pHandler->m_pKeys->at(key) = true;
 
 				if (pHandler->m_bCaptureKey) {
-					_D("hhas");
-					pHandler->m_clParam = lParam;
+					pHandler->m_dCapturedKey = key;
 					pHandler->m_bCaptureKey = false;
 				}
 
@@ -136,6 +127,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 		default:
 			break;
 		}
+		
 	}
-	return CallNextHookEx(0, nCode, wParam, lParam);
+	return CallNextHookEx(pHandler->m_hHook, nCode, wParam, lParam);
 }
