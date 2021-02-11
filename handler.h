@@ -6,18 +6,18 @@
 #include <map>
 #include <Windows.h>
 
-//LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
 
 class Handler
 {
 public:
-	//HHOOK m_hHook;
-	//HANDLE m_handle;
-	std::map<int, bool>* m_pKeys = new std::map<int, bool>;
+	HHOOK m_hHook;
+	HANDLE m_handle;
+	std::map<DWORD, bool>* m_pKeys = new std::map<DWORD, bool>;
 public:
 
 	bool m_bCaptureKey;
-	LPARAM m_clParam;
+	DWORD m_dCapturedKey;
 	Stance stance;
 	Slot slot, lastSlot;
 
@@ -30,5 +30,5 @@ public:
 	Handler();
 	~Handler();
 
-	//static void handlerThread();
+	static void handlerThread();
 };
