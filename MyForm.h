@@ -50,8 +50,6 @@ namespace EscoCp {
 	private: System::Windows::Forms::Label^ label12;
 	private: System::Windows::Forms::Label^ label5;
 
-	private: delegate void SafeCallDelegate(String text);
-
 
 
 	public:
@@ -119,7 +117,10 @@ namespace EscoCp {
 
 
 	private: System::Windows::Forms::GroupBox^ groupBox2;
-	private: System::ComponentModel::BackgroundWorker^ backgroundWorker1;
+	public: System::ComponentModel::BackgroundWorker^ bgWorkerTxt;
+	private:
+
+
 	private: System::Windows::Forms::GroupBox^ groupBox3;
 	private: System::Windows::Forms::TableLayoutPanel^ tableLayoutPanel2;
 	private: System::Windows::Forms::Label^ txtForce;
@@ -195,7 +196,7 @@ namespace EscoCp {
 			this->inpRecoilCrouch = (gcnew System::Windows::Forms::NumericUpDown());
 			this->inpRecoilProne = (gcnew System::Windows::Forms::NumericUpDown());
 			this->inpDelayProne = (gcnew System::Windows::Forms::NumericUpDown());
-			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->bgWorkerTxt = (gcnew System::ComponentModel::BackgroundWorker());
 			this->groupBox3 = (gcnew System::Windows::Forms::GroupBox());
 			this->tableLayoutPanel2 = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->label5 = (gcnew System::Windows::Forms::Label());
@@ -505,6 +506,12 @@ namespace EscoCp {
 			this->inpDelayProne->Size = System::Drawing::Size(92, 20);
 			this->inpDelayProne->TabIndex = 4;
 			// 
+			// bgWorkerTxt
+			//
+			this->bgWorkerTxt->WorkerSupportsCancellation = true;
+			this->bgWorkerTxt->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &MyForm::bgWorkerTxt_DoWork);
+			this->bgWorkerTxt->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &MyForm::bgWorkerTxt_DoWorkCompleted);
+			// 
 			// groupBox3
 			// 
 			this->groupBox3->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
@@ -800,48 +807,22 @@ namespace EscoCp {
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 	}
-	private: void Button1_Click(object sender, EventArgs e)
-	{
-		thread2 = new Thread(new ThreadStart(SetText));
-		thread2.Start();
-		Thread.Sleep(1000);
-	}
-
-	private: void WriteTextSafe(String text)
-	{
-		if (btnActivate->InvokeRequired)
-		{
-			auto d = gcnew SafeCallDelegate(this,WriteTextSafe);
-			btnActivate->Invoke(d, text);
-		}
-		else
-		{
-			btnActivate->Text = text;
-		}
-	}
-
-	private void SetText()
-	{
-		WriteTextSafe("This text was set safely.");
-	}
 	public: void eventsThread() {
 		bool waitingforkey = false;
 		while (1) {
 			if (!waitingforkey && hHandler->m_bCaptureKey) {
 				waitingforkey = true;
+				
 			}
 			if (waitingforkey && !hHandler->m_bCaptureKey) {
 				//currentProfile->activateKey = hHandler->m_;
 				//_D(hHandler->m_dCapturedKey);
-				std::string str = vkToString(hHandler->m_dCapturedKey);
-				//this->btnActivate->Text = str;
 				//btnActivate->Text = System::UInt32(hHandler->m_dCapturedKey).ToString();
 				waitingforkey = false;
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 	}
-
 	private: System::Void btnAddProfile_Click(System::Object^ sender, System::EventArgs^ e) {
 		Profile newProfile = Profile();
 		newProfile.name = "New Profile";
@@ -905,8 +886,38 @@ namespace EscoCp {
 			this->ActiveControl = label1;
 			//_D(currentProfile->name);
 			hHandler->m_bCaptureKey = true;
+			this->bgWorkerTxt->RunWorkerAsync();
 			_D("waiting for click");
 		}
 	}
-};
+	private: System::Void bgWorkerTxt_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e) {
+		if (bgWorkerTxt->CancellationPending)
+		{
+			e->Cancel = true;
+			return;
+		}
+		e->Result = setTextBtn(bgWorkerTxt);
+	}
+	private: System::Void bgWorkerTxt_DoWorkCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
+	{
+		if (e->Cancelled) {
+			this->btnActivate->Text = "esc";
+		}
+		else {
+			this->btnActivate->Text = e->Result->ToString();
+		}
+	}
+	private: bool setTextBtn(BackgroundWorker^ bw) {
+		while (!bw->CancellationPending)
+		{
+			if (!hHandler->m_bCaptureKey) {
+				std::string str = vkToString(hHandler->m_dCapturedKey);
+				this->btnActivate->Text = gcnew String(str.c_str());
+				return true;
+			}
+			Thread::Sleep(100);
+		}
+		return false;
+	}
+	};
 }
