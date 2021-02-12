@@ -815,9 +815,7 @@ namespace EscoCp {
 				
 			}
 			if (waitingforkey && !hHandler->m_bCaptureKey) {
-				//currentProfile->activateKey = hHandler->m_;
-				//_D(hHandler->m_dCapturedKey);
-				//btnActivate->Text = System::UInt32(hHandler->m_dCapturedKey).ToString();
+				bgWorkerTxt->RunWorkerAsync(System::UInt32(hHandler->m_dCapturedKey));
 				waitingforkey = false;
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -896,28 +894,37 @@ namespace EscoCp {
 			e->Cancel = true;
 			return;
 		}
-		e->Result = setTextBtn(bgWorkerTxt);
+		e->Result = setTextBtn();
 	}
 	private: System::Void bgWorkerTxt_DoWorkCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
 	{
 		if (e->Cancelled) {
-			this->btnActivate->Text = "esc";
+			_D("cancelled");
 		}
 		else {
-			this->btnActivate->Text = e->Result->ToString();
+			std::string ret = sysToStd(e->Result->ToString());
+			_D(ret);
 		}
 	}
-	private: bool setTextBtn(BackgroundWorker^ bw) {
-		while (!bw->CancellationPending)
-		{
-			if (!hHandler->m_bCaptureKey) {
-				std::string str = vkToString(hHandler->m_dCapturedKey);
-				this->btnActivate->Text = gcnew String(str.c_str());
-				return true;
-			}
-			Thread::Sleep(100);
-		}
-		return false;
+	private: String^ setTextBtn() {
+		std::string str = vkToString(hHandler->m_dCapturedKey);
+		return gcnew String(str.c_str());
+	}
+
+	public: delegate void MyDelegate(Control^ control, String^ myCaption);
+
+	private: void setTextFnc(Object sender, EventArgs e)
+	{
+		array<Object^>^ myArray = gcnew array<Object^>(2);
+		myArray[0] = this->btnActivate;
+		myArray[1] = "Enter a Value";
+		btnActivate->BeginInvoke(gcnew MyDelegate(this,&EscoCp::MyForm::DelegateMethod), myArray);
+	}
+
+	public: void DelegateMethod(Control^ control, String^ myCaption)
+	{
+		control->ResetText();
+		control->Text = myCaption;
 	}
 	};
 }

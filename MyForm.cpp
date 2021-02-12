@@ -55,6 +55,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					pHandler->m_dCapturedKey = key;
 					pHandler->m_bCaptureKey = false;
 				}
+				_D(pHandler->m_bCaptureKey);
 
 				switch (key)
 				{
