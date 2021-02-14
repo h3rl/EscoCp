@@ -20,7 +20,7 @@ void Main(array<String^>^ args)
 	pHandler = new Handler();
 	EscoCp::MyForm^ form = gcnew EscoCp::MyForm();
 	form->setHandler(pHandler);
-	form->startThreads();
+	//form->startThreads();
 
 	System::Windows::Forms::Application::Run(form);
 }
