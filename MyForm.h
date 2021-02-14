@@ -925,11 +925,22 @@ namespace EscoCp {
 			int py = Cursor->Position.Y;
 
 			if (py <= pos.bottom && py >= pos.top) {//within listprofiles (top,left)
-				cfg->profileList.erase(cfg->profileList.begin() + SelectedIndex);
-				loadProfilesFromCfg();
-				SelectedIndex = -1;
-				listProfiles->SelectedIndex = -1;
+				String^ profName = gcnew String(currentProfile->name.c_str());
 
+				// Initializes the variables to pass to the MessageBox.Show method.
+				String^ message = "Really delete " + profName->ToUpper() + "?";
+				String^ caption( "Are You Sure?" );
+				MessageBoxButtons buttons = MessageBoxButtons::YesNo;
+				MessageBoxIcon icon = MessageBoxIcon::Question;
+
+				Windows::Forms::DialogResult res = MessageBox::Show(message, caption, buttons, icon);
+				if (res == Windows::Forms::DialogResult::Yes)
+				{
+					cfg->profileList.erase(cfg->profileList.begin() + SelectedIndex);
+					loadProfilesFromCfg();
+					SelectedIndex = -1;
+					listProfiles->SelectedIndex = -1;
+				}
 			}
 		}
 	}
