@@ -51,12 +51,6 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 			if (!pHandler->m_pKeys->at(key)) {
 				pHandler->m_pKeys->at(key) = true;
 
-				if (pHandler->m_bCaptureKey) {
-					pHandler->m_dCapturedKey = key;
-					pHandler->m_bCaptureKey = false;
-				}
-				_D(pHandler->m_bCaptureKey);
-
 				switch (key)
 				{
 				case VK_SPACE: {

@@ -17,7 +17,6 @@ public:
 public:
 
 	bool m_bCaptureKey;
-	DWORD m_dCapturedKey;
 	Stance stance;
 	Slot slot, lastSlot;
 

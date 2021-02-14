@@ -7,13 +7,13 @@
   "profiles": [
     {
       "name": "Light",
-      "activate": "0",
+      "onkey": -1,
       "recoil": [ 12, 11, 11 ],
       "delay": [ 12, 11, 11 ]
     },
     {
       "name": "Heavy",
-      "activate": "0",
+      "onkey": -1,
       "recoil": [ 12, 11, 11 ],
       "delay": [ 12, 11, 11 ]
     }

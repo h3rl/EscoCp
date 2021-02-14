@@ -3,7 +3,6 @@
 
 Handler::Handler() {
 	m_bCaptureKey = false;
-	m_dCapturedKey = NULL;
 	m_hHook = SetWindowsHookExA(WH_KEYBOARD_LL, (HOOKPROC)KeyboardProc, NULL, NULL);
 	
 	if (m_hHook)
