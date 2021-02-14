@@ -14,8 +14,7 @@ public:
     Profile();
     ~Profile(){};
     std::string name;
-    std::string activateKeyName;
-    DWORD activateKey;
+    int onkey;
     std::vector<int> recoil;
     std::vector<int> delay;
 
@@ -28,7 +27,6 @@ public:
     bool hidden;
     bool onTop;
     int x, y;
-    json j;
 public:
     Config() {
         onTop = false;
@@ -37,4 +35,5 @@ public:
     ~Config() {};
     bool readConfigFile();
     void create();
+    bool write();
 };

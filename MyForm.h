@@ -64,7 +64,15 @@ namespace EscoCp {
 			hWnd = static_cast<HWND>(this->Handle.ToPointer());
 
 			cfg = new Config();
-			cfg->readConfigFile();
+			if (cfg->readConfigFile()) {
+				writeMessage("Config read");
+			}
+			else {
+				writeMessage("unable to read cfg, check for typos or delete file", true);
+			}
+
+			chkOntop->Checked = cfg->onTop;
+			updateWindowPos();
 
 			this->loadProfilesFromCfg();
 
@@ -258,7 +266,7 @@ namespace EscoCp {
 			this->btnRestore->Name = L"btnRestore";
 			this->btnRestore->Size = System::Drawing::Size(70, 23);
 			this->btnRestore->TabIndex = 24;
-			this->btnRestore->Text = L"Restore";
+			this->btnRestore->Text = L"Restore all";
 			this->btnRestore->UseVisualStyleBackColor = true;
 			this->btnRestore->Click += gcnew System::EventHandler(this, &MyForm::btnRestore_Click);
 			// 
@@ -268,7 +276,7 @@ namespace EscoCp {
 			this->btnSave->Name = L"btnSave";
 			this->btnSave->Size = System::Drawing::Size(70, 23);
 			this->btnSave->TabIndex = 23;
-			this->btnSave->Text = L"Save";
+			this->btnSave->Text = L"Save all";
 			this->btnSave->UseVisualStyleBackColor = true;
 			this->btnSave->Click += gcnew System::EventHandler(this, &MyForm::btnSave_Click);
 			// 
@@ -285,14 +293,16 @@ namespace EscoCp {
 			this->listProfiles->Size = System::Drawing::Size(143, 161);
 			this->listProfiles->TabIndex = 1;
 			this->listProfiles->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::listProfiles_SelectedIndexChanged);
+			this->listProfiles->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::listProfiles_MDown);
 			// 
 			// inpProfile
 			// 
-			this->inpProfile->ForeColor = System::Drawing::Color::Gray;
+			this->inpProfile->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
 			this->inpProfile->Location = System::Drawing::Point(114, 16);
 			this->inpProfile->Name = L"inpProfile";
-			this->inpProfile->Size = System::Drawing::Size(198, 20);
+			this->inpProfile->Size = System::Drawing::Size(197, 20);
 			this->inpProfile->TabIndex = 16;
+			this->inpProfile->TextChanged += gcnew System::EventHandler(this, &MyForm::inpProfile_TextChanged);
 			// 
 			// groupBox1
 			// 
@@ -322,6 +332,7 @@ namespace EscoCp {
 			// 
 			// btnActivate
 			// 
+			this->btnActivate->Cursor = System::Windows::Forms::Cursors::Default;
 			this->btnActivate->ForeColor = System::Drawing::Color::Gray;
 			this->btnActivate->Location = System::Drawing::Point(114, 45);
 			this->btnActivate->Name = L"btnActivate";
@@ -329,7 +340,7 @@ namespace EscoCp {
 			this->btnActivate->Size = System::Drawing::Size(197, 20);
 			this->btnActivate->TabIndex = 21;
 			this->btnActivate->Click += gcnew System::EventHandler(this, &MyForm::btnActivate_Click);
-			this->btnActivate->KeyPress += gcnew System::Windows::Forms::KeyEventHandler(this, &Myform::btnActivate_KeyPress);
+			this->btnActivate->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::btnActivate_KeyDown);
 			// 
 			// label7
 			// 
@@ -469,6 +480,7 @@ namespace EscoCp {
 			this->inpRecoilStanding->Name = L"inpRecoilStanding";
 			this->inpRecoilStanding->Size = System::Drawing::Size(93, 20);
 			this->inpRecoilStanding->TabIndex = 0;
+			this->inpRecoilStanding->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpRecoilStanding_ValueChanged);
 			// 
 			// inpDelayStanding
 			// 
@@ -476,6 +488,7 @@ namespace EscoCp {
 			this->inpDelayStanding->Name = L"inpDelayStanding";
 			this->inpDelayStanding->Size = System::Drawing::Size(92, 20);
 			this->inpDelayStanding->TabIndex = 1;
+			this->inpDelayStanding->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpDelayStanding_ValueChanged);
 			// 
 			// inpDelayCrouch
 			// 
@@ -483,6 +496,7 @@ namespace EscoCp {
 			this->inpDelayCrouch->Name = L"inpDelayCrouch";
 			this->inpDelayCrouch->Size = System::Drawing::Size(92, 20);
 			this->inpDelayCrouch->TabIndex = 2;
+			this->inpDelayCrouch->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpDelayCrouch_ValueChanged);
 			// 
 			// inpRecoilCrouch
 			// 
@@ -490,6 +504,7 @@ namespace EscoCp {
 			this->inpRecoilCrouch->Name = L"inpRecoilCrouch";
 			this->inpRecoilCrouch->Size = System::Drawing::Size(93, 20);
 			this->inpRecoilCrouch->TabIndex = 3;
+			this->inpRecoilCrouch->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpRecoilCrouch_ValueChanged);
 			// 
 			// inpRecoilProne
 			// 
@@ -497,6 +512,7 @@ namespace EscoCp {
 			this->inpRecoilProne->Name = L"inpRecoilProne";
 			this->inpRecoilProne->Size = System::Drawing::Size(93, 20);
 			this->inpRecoilProne->TabIndex = 5;
+			this->inpRecoilProne->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpRecoilProne_ValueChanged);
 			// 
 			// inpDelayProne
 			// 
@@ -504,6 +520,7 @@ namespace EscoCp {
 			this->inpDelayProne->Name = L"inpDelayProne";
 			this->inpDelayProne->Size = System::Drawing::Size(92, 20);
 			this->inpDelayProne->TabIndex = 4;
+			this->inpDelayProne->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpDelayProne_ValueChanged);
 			// 
 			// groupBox3
 			// 
@@ -811,7 +828,7 @@ namespace EscoCp {
 	}
 	private: System::Void listProfiles_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 		SelectedIndex = listProfiles->SelectedIndex;
-		_D("Selected index: " << SelectedIndex);
+		//_D("Selected index: " << SelectedIndex);
 		if (SelectedIndex >= 0) {
 
 			currentProfile = &cfg->profileList[SelectedIndex];
@@ -824,57 +841,136 @@ namespace EscoCp {
 			inpRecoilCrouch->Value = currentProfile->recoil[1];
 			inpRecoilProne->Value = currentProfile->recoil[2];
 
+			btnActivate->Text = getOnKeyString();
 			inpProfile->Text = System::String(currentProfile->name.c_str()).ToString();
 		}
+		listProfiles->SelectedIndex = SelectedIndex;
 	}
 	private: System::Void btnSave_Click(System::Object^ sender, System::EventArgs^ e) {
-		int index = SelectedIndex;
-		_D("clickindex:" << SelectedIndex);
-		if (index >= 0 && inpProfile->Text->Length != 0)
-		{
-			std::string newName = sysToStd(inpProfile->Text->ToString());
-
-			if (currentProfile->name != newName) {
-				currentProfile->name = newName;
-			}
-
-			currentProfile->delay.clear();
-			currentProfile->delay.push_back(System::Convert::ToInt32(inpDelayStanding->Value));
-			currentProfile->delay.push_back(System::Convert::ToInt32(inpDelayCrouch->Value));
-			currentProfile->delay.push_back(System::Convert::ToInt32(inpDelayProne->Value));
-
-			currentProfile->recoil.clear();
-			currentProfile->recoil.push_back(System::Convert::ToInt32(inpRecoilStanding->Value));
-			currentProfile->recoil.push_back(System::Convert::ToInt32(inpRecoilCrouch->Value));
-			currentProfile->recoil.push_back(System::Convert::ToInt32(inpRecoilProne->Value));
-
-			loadProfilesFromCfg();
+		if (cfg->write()) {
+			writeMessage("Config saved");
+		}
+		else {
+			writeMessage("Config was unable to save",true);
 		}
 	}
 	private: System::Void btnRestore_Click(System::Object^ sender, System::EventArgs^ e) {
-		cfg->readConfigFile();
+		if (cfg->readConfigFile()) {
+			writeMessage("Config read");
+		}
+		else {
+			writeMessage("unable to read cfg, check for typos or delete file", true);
+		}
 		loadProfilesFromCfg();
-		listProfiles->SelectedIndex = 0;
+		listProfiles->SelectedIndex = -1;
 	}
 	private: System::Void chkOntop_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		cfg->onTop = chkOntop->Checked;
 		updateWindowPos();
 	}
+	private: System::Void writeMessage(System::String^ message, bool error) {
+		if (error) {
+			outMessage->ForeColor = System::Drawing::Color::Red;
+		}
+		else {
+			outMessage->ForeColor = System::Drawing::SystemColors::ControlLightLight;
+		}
+		outMessage->Text = message;
+	}
+	private: System::Void writeMessage(System::String^ message) {
+		writeMessage(message, false);
+	}
 	private: System::Void btnActivate_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (SelectedIndex >= 0) {
-			btnActivate->Text = "Click a button";
+			btnActivate->Text = "bind key (ESC to cancel)";
 			this->ActiveControl = label1;
 			//_D(currentProfile->name);
 			hHandler->m_bCaptureKey = true;
-			_D("waiting for click");
+			btnActivate->Focus();
 		}
 	}
-	private: System::Void btnActivate_KeyPress(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+	private: System::String^ getOnKeyString() {
+		if (currentProfile->onkey == -1) {
+			return gcnew String("NONE");
+		}
+		return gcnew String(vkToString(currentProfile->onkey).c_str());
+	}
+	private: System::Void btnActivate_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+		DWORD key = (DWORD)e->KeyCode;
+		if (hHandler->m_bCaptureKey) {
+			hHandler->m_bCaptureKey = false;
+			if (key != VK_ESCAPE) {
+				currentProfile->onkey = key;
+			}
+			label1->Focus();
+			btnActivate->Text = getOnKeyString();
+		}
 
 	}
-	private: String^ setTextBtn() {
-		std::string str = vkToString(hHandler->m_dCapturedKey);
-		return gcnew String(str.c_str());
+	private: System::Void listProfiles_MDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		if (e->Button == System::Windows::Forms::MouseButtons::Right && SelectedIndex >= 0) {
+			RECT pos;
+
+			int wy = this->Top + 65;
+			/*
+			//this->
+			//Point cLoc = this->PointToScreen(listProfiles->Location);
+			//int ny = cLoc.Y;
+			_D(this->PointToScreen(listProfiles->Location).Y << " " << this->Top << " " << wy);
+			*/
+
+			pos.top = this->Top + 65;
+			pos.bottom = pos.top + listProfiles->ItemHeight * (SelectedIndex + 1);
+
+			int py = Cursor->Position.Y;
+
+			if (py <= pos.bottom && py >= pos.top) {//within listprofiles (top,left)
+				cfg->profileList.erase(cfg->profileList.begin() + SelectedIndex);
+				loadProfilesFromCfg();
+				SelectedIndex = -1;
+				listProfiles->SelectedIndex = -1;
+
+			}
+		}
 	}
-	};
+	public: int maxd(System::Decimal num, int min_) {
+		return max((int)System::Decimal::Floor(num), min_);
+	}
+	private: System::Void inpDelayStanding_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+		if (currentProfile == NULL)
+			return;
+		currentProfile->delay.at(STANDING) = maxd(  inpDelayStanding->Value , 1);
+	}
+	private: System::Void inpDelayCrouch_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+		if (currentProfile == NULL)
+			return;
+		currentProfile->delay.at(CROUCH) = maxd(inpDelayCrouch->Value,1);
+	}
+	private: System::Void inpDelayProne_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+		if (currentProfile == NULL)
+			return;
+		currentProfile->delay.at(PRONE) = maxd(inpDelayProne->Value,1);
+	}
+	private: System::Void inpRecoilStanding_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+		if (currentProfile == NULL)
+			return;
+		currentProfile->recoil.at(STANDING) = maxd(inpRecoilStanding->Value,0);
+	}
+	private: System::Void inpRecoilCrouch_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+		if (currentProfile == NULL)
+			return;
+		currentProfile->recoil.at(CROUCH) = maxd(inpRecoilCrouch->Value,0);
+	}
+	private: System::Void inpRecoilProne_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
+		if (currentProfile == NULL)
+			return;
+		currentProfile->recoil.at(PRONE) = maxd(inpRecoilProne->Value,0);
+	}
+	private: System::Void inpProfile_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+		if (currentProfile == NULL)
+			return;
+		currentProfile->name = sysToStd(inpProfile->Text);
+		loadProfilesFromCfg();
+	}
+};
 }
