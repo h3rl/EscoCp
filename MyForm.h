@@ -117,8 +117,7 @@ namespace EscoCp {
 
 
 	private: System::Windows::Forms::GroupBox^ groupBox2;
-	public: System::ComponentModel::BackgroundWorker^ bgWorkerTxt;
-	private:
+
 
 
 	private: System::Windows::Forms::GroupBox^ groupBox3;
@@ -196,7 +195,6 @@ namespace EscoCp {
 			this->inpRecoilCrouch = (gcnew System::Windows::Forms::NumericUpDown());
 			this->inpRecoilProne = (gcnew System::Windows::Forms::NumericUpDown());
 			this->inpDelayProne = (gcnew System::Windows::Forms::NumericUpDown());
-			this->bgWorkerTxt = (gcnew System::ComponentModel::BackgroundWorker());
 			this->groupBox3 = (gcnew System::Windows::Forms::GroupBox());
 			this->tableLayoutPanel2 = (gcnew System::Windows::Forms::TableLayoutPanel());
 			this->label5 = (gcnew System::Windows::Forms::Label());
@@ -331,6 +329,7 @@ namespace EscoCp {
 			this->btnActivate->Size = System::Drawing::Size(197, 20);
 			this->btnActivate->TabIndex = 21;
 			this->btnActivate->Click += gcnew System::EventHandler(this, &MyForm::btnActivate_Click);
+			this->btnActivate->KeyPress += gcnew System::Windows::Forms::KeyEventHandler(this, &Myform::btnActivate_KeyPress);
 			// 
 			// label7
 			// 
@@ -505,12 +504,6 @@ namespace EscoCp {
 			this->inpDelayProne->Name = L"inpDelayProne";
 			this->inpDelayProne->Size = System::Drawing::Size(92, 20);
 			this->inpDelayProne->TabIndex = 4;
-			// 
-			// bgWorkerTxt
-			//
-			this->bgWorkerTxt->WorkerSupportsCancellation = true;
-			this->bgWorkerTxt->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &MyForm::bgWorkerTxt_DoWork);
-			this->bgWorkerTxt->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &MyForm::bgWorkerTxt_DoWorkCompleted);
 			// 
 			// groupBox3
 			// 
@@ -808,18 +801,7 @@ namespace EscoCp {
 		}
 	}
 	public: void eventsThread() {
-		bool waitingforkey = false;
-		while (1) {
-			if (!waitingforkey && hHandler->m_bCaptureKey) {
-				waitingforkey = true;
-				
-			}
-			if (waitingforkey && !hHandler->m_bCaptureKey) {
-				bgWorkerTxt->RunWorkerAsync(System::UInt32(hHandler->m_dCapturedKey));
-				waitingforkey = false;
-			}
-			std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		}
+		
 	}
 	private: System::Void btnAddProfile_Click(System::Object^ sender, System::EventArgs^ e) {
 		Profile newProfile = Profile();
@@ -884,47 +866,15 @@ namespace EscoCp {
 			this->ActiveControl = label1;
 			//_D(currentProfile->name);
 			hHandler->m_bCaptureKey = true;
-			this->bgWorkerTxt->RunWorkerAsync();
 			_D("waiting for click");
 		}
 	}
-	private: System::Void bgWorkerTxt_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e) {
-		if (bgWorkerTxt->CancellationPending)
-		{
-			e->Cancel = true;
-			return;
-		}
-		e->Result = setTextBtn();
-	}
-	private: System::Void bgWorkerTxt_DoWorkCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e)
-	{
-		if (e->Cancelled) {
-			_D("cancelled");
-		}
-		else {
-			std::string ret = sysToStd(e->Result->ToString());
-			_D(ret);
-		}
+	private: System::Void btnActivate_KeyPress(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+
 	}
 	private: String^ setTextBtn() {
 		std::string str = vkToString(hHandler->m_dCapturedKey);
 		return gcnew String(str.c_str());
-	}
-
-	public: delegate void MyDelegate(Control^ control, String^ myCaption);
-
-	private: void setTextFnc(Object sender, EventArgs e)
-	{
-		array<Object^>^ myArray = gcnew array<Object^>(2);
-		myArray[0] = this->btnActivate;
-		myArray[1] = "Enter a Value";
-		btnActivate->BeginInvoke(gcnew MyDelegate(this,&EscoCp::MyForm::DelegateMethod), myArray);
-	}
-
-	public: void DelegateMethod(Control^ control, String^ myCaption)
-	{
-		control->ResetText();
-		control->Text = myCaption;
 	}
 	};
 }
