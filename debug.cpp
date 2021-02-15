@@ -35,10 +35,22 @@ void _S(const char* txt) {
 #endif
 }
 
+void _S(std::string txt) {
+#ifdef _DEBUG
+    _S(txt.c_str());
+#endif
+}
+
 void _E(const char* txt) {
 #ifdef _DEBUG
     SetConsoleTextAttribute(hConsole, 12);
     _D("[ERR] - " << txt);
     SetConsoleTextAttribute(hConsole, 15);
+#endif
+}
+
+void _E(std::string txt) {
+#ifdef _DEBUG
+    _E(txt.c_str());
 #endif
 }

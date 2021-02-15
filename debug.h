@@ -12,4 +12,6 @@
 
 void createDbgConsole();
 void _S(const char* txt);
+void _S(std::string txt);
 void _E(const char* txt);
+void _E(std::string txt);
