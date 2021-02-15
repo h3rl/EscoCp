@@ -21,12 +21,16 @@ Profile::Profile() {
         this->recoil.push_back(0);
 }
 
-bool Config::readConfigFile() {
+bool Config::read() {
     // empty profile list
     profileList.clear();
     // read JSON file
     std::ifstream i(CFGNAME);
-    if (i) {
+
+    bool ret = false;
+
+    //check if file exists
+    if (i.good()) {
         std::string lastread;
         json j;
         i >> j;
@@ -73,25 +77,24 @@ bool Config::readConfigFile() {
 
                 profileList.push_back(profile);
             }
+            ret = true;
+            _S("Read Config");
         }
         catch (...)
         {
-            if (j) {
-                j.clear();
-            }
-            i.close();
             _E("Failed to read config, check for typos");
             _E("You can also delete it to make a new one");
             _D("last read: " << lastread);
-            return false;
         }
-        _S("Read Config");
         j.clear();
         i.close();
-        return true;
     }
-    create();
-    return false;
+    else {
+        i.close();
+        create();
+        ret = read();
+    }
+    return ret;
 }
 
 bool Config::write() {
@@ -141,9 +144,9 @@ void Config::create() {
     if(o){
         o << std::setw(2) << k << std::endl;
         o.close();
-        _S("config.json created");
+        _S(std::string(CFGNAME)+" created");
     }
     else {
-        _E("failed to create config");
+        _E("failed to create "+std::string(CFGNAME));
     }
 }

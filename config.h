@@ -17,8 +17,6 @@ public:
     int onkey;
     std::vector<int> recoil;
     std::vector<int> delay;
-
-    void setDefault();
 };
 
 class Config {
@@ -33,7 +31,7 @@ public:
         hidden = false;
     };
     ~Config() {};
-    bool readConfigFile();
+    bool read();
     void create();
     bool write();
 };

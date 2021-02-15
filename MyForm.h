@@ -64,7 +64,7 @@ namespace EscoCp {
 			hWnd = static_cast<HWND>(this->Handle.ToPointer());
 
 			cfg = new Config();
-			if (cfg->readConfigFile()) {
+			if (cfg->read()) {
 				writeMessage("Config read");
 			}
 			else {
@@ -101,8 +101,7 @@ namespace EscoCp {
 			if (components) {
 				delete components;
 			}
-			ExitProcess(0);
-
+			return;
 		}
 	private: System::Windows::Forms::Label^ btnAddProfile;
 	protected:
@@ -761,7 +760,7 @@ namespace EscoCp {
 
 		}
 		public: void setHandler(Handler* h) {
-			_D("set");
+			_S("Handler set");
 			this->hHandler = h;
 		}
 		public: void SendOutputMessage(System::String^ msg) {
@@ -855,7 +854,7 @@ namespace EscoCp {
 		}
 	}
 	private: System::Void btnRestore_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (cfg->readConfigFile()) {
+		if (cfg->read()) {
 			writeMessage("Config read");
 		}
 		else {
