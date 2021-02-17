@@ -28,9 +28,9 @@ enum Stance {
 };
 
 enum Slot {
-	NOSLOT,
-	SLOT1,
-	SLOT2,
+	NOSLOT = -1,
+	SLOT1 = 0,
+	SLOT2 = 1,
 };
 
 

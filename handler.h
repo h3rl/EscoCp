@@ -2,8 +2,10 @@
 
 #include "header.h"
 #include "debug.h"
+#include "config.h"
 
 #include <map>
+#include <vector>
 #include <Windows.h>
 
 LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
@@ -11,8 +13,10 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
 class Handler
 {
 public:
+	std::vector<Profile*> profiles = { nullptr,nullptr };
+
 	HHOOK m_hHook;
-	HANDLE m_handle;
+	HANDLE m_hMessage;
 	std::map<DWORD, bool>* m_pKeys = new std::map<DWORD, bool>;
 public:
 
@@ -29,5 +33,5 @@ public:
 	Handler();
 	~Handler();
 
-	static void handlerThread();
+	static void messageThread();
 };

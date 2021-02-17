@@ -22,13 +22,14 @@ public:
 class Config {
 public:
     std::vector<Profile> profileList;
-    bool hidden;
+    int vanishkey;
+    bool vanish;
     bool onTop;
     int x, y;
 public:
     Config() {
         onTop = false;
-        hidden = false;
+        vanish = false;
     };
     ~Config() {};
     bool read();
