@@ -2,6 +2,9 @@
 #include "MyForm.h"
 
 Handler::Handler() {
+	slot = NOSLOT;
+	lastSlot = NOSLOT;
+	stance = STANDING;
 	m_bCaptureKey = false;
 	m_hHook = SetWindowsHookExA(WH_KEYBOARD_LL, (HOOKPROC)KeyboardProc, NULL, NULL);
 	
@@ -13,7 +16,7 @@ Handler::Handler() {
 		delete this;
 	}
 	
-	m_handle = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)handlerThread, 0, 0, 0);
+	m_hMessage = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)messageThread, 0, 0, 0);
 }
 
 Handler::~Handler() {
@@ -21,12 +24,12 @@ Handler::~Handler() {
 		UnhookWindowsHookEx(m_hHook);
 		m_hHook = NULL;
 	}
-	if (m_handle) {
-		TerminateThread(m_handle, 0);
+	if (m_hMessage) {
+		TerminateThread(m_hMessage, 0);
 	}
 }
 
-void Handler::handlerThread()
+void Handler::messageThread()
 {
 	MSG msg{ 0 };
 	//our application loop

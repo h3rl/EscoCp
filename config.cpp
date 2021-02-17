@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <Winuser.h>
 
-#define CFGNAME "config_test.json"
+#define CFGNAME "EscoCp.cfg"
 
 Profile::Profile() {
     this->name = "";
@@ -37,6 +37,9 @@ bool Config::read() {
         try {
             lastread = "onTop";
             onTop = j["onTop"].get<bool>();
+
+            lastread = "vanishkey";
+            vanishkey = j["vanishkey"].get<int>();
 
             lastread = "x";
             x = j["window"]["x"].get<int>();
@@ -101,6 +104,7 @@ bool Config::write() {
     std::ofstream o(CFGNAME);
     json k;
     k["onTop"] = onTop;
+    k["vanishkey"] = vanishkey;
     k["window"]["x"] = x;
     k["window"]["y"] = y;
     for (size_t i = 0; i < profileList.size(); i++) {
@@ -120,6 +124,7 @@ void Config::create() {
     k["onTop"] = true;
     k["window"]["x"] = 100;
     k["window"]["y"] = 100;
+    k["vanishkey"] = -1;
 
     std::vector<Profile> testprofs = { Profile(), Profile() };
     testprofs.at(0).name = "first profile";

@@ -8,7 +8,13 @@ using namespace System::Text;
 using namespace System::Windows::Forms;
 using namespace System::Threading;
 
+
+HWND gHwnd = NULL;
 Handler* pHandler = nullptr;
+Config* pConfig = nullptr;
+HANDLE m_hRecoil;
+
+void recoilThread();
 
 void Main(array<String^>^ args)
 {
@@ -18,11 +24,35 @@ void Main(array<String^>^ args)
 	Application::SetCompatibleTextRenderingDefault(false);
 
 	pHandler = new Handler();
+	pConfig = new Config();
 	EscoCp::MyForm^ form = gcnew EscoCp::MyForm();
+	form->setConfig(pConfig);
 	form->setHandler(pHandler);
-	//form->startThreads();
+	gHwnd = form->getHwnd();
+	m_hRecoil = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)recoilThread, 0, 0, 0);
 
 	System::Windows::Forms::Application::Run(form);
+}
+
+void recoilThread()
+{
+	_S("recoil thread started");
+	for (;;)
+	{
+		if (GetAsyncKeyState(VK_LBUTTON) && GetAsyncKeyState(VK_RBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr)
+		{
+			int force, delay;
+
+			do {
+				force = max(pHandler->profiles.at(pHandler->slot)->recoil.at(pHandler->stance),0);
+				delay = max(pHandler->profiles.at(pHandler->slot)->delay.at(pHandler->stance),1);
+				input::move(0, force);
+				std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+			} while (GetAsyncKeyState(VK_LBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr);
+			_D("Slot: " << pHandler->slot << "\nName: " << pHandler->profiles.at(pHandler->slot)->name << "\nStance: " << pHandler->stance << "\nForce:" << force << "\nDelay: " << delay);
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
 }
 
 LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
@@ -51,6 +81,17 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 			if (!pHandler->m_pKeys->at(key)) {
 				pHandler->m_pKeys->at(key) = true;
 
+				for (int i = 0; i < pConfig->profileList.size(); i++) {
+					Profile* profile = &pConfig->profileList.at(i);
+					if (profile->onkey == key && pHandler->slot != NOSLOT ) {
+						pHandler->profiles.at(pHandler->slot) = &pConfig->profileList.at(i);
+						_D(key << " is set to slot " << pHandler->slot);
+					}
+				}
+				if (key == pConfig->vanishkey) {
+					pConfig->vanish = !pConfig->vanish;
+					ShowWindow(gHwnd, pConfig->vanish ? SW_HIDE : SW_SHOW);
+				}
 				switch (key)
 				{
 				case VK_SPACE: {
