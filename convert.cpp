@@ -6,6 +6,11 @@ std::string sysToStd(System::String^ txt)
     return context.marshal_as<std::string>(txt);
 }
 
+const char* sysToCstr(System::String^ txt)
+{
+    return sysToStd(txt).c_str();
+}
+
 std::string vkToString(int vk) {
     char c[2] = { 0 };
     if (vk >= '0' && vk <= '9') { c[0] = (char)vk; return std::string(c); }

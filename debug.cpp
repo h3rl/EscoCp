@@ -1,4 +1,5 @@
 #include "debug.h"
+#include "header.h"
 #include <Windows.h>
 
 HANDLE hConsole;
@@ -53,4 +54,40 @@ void _E(std::string txt) {
 #ifdef _DEBUG
     _E(txt.c_str());
 #endif
+}
+
+std::string stringifyStance(int stance,bool letters) {
+    if (letters) {
+        switch (stance) {
+        case Stance::STANDING: {
+            return "standing";
+            break;
+        }
+        case Stance::CROUCH: {
+            return "crouch";
+            break;
+        }
+        case Stance::PRONE: {
+            return "prone";
+            break;
+        }
+        }
+    }
+    else {
+        switch (stance) {
+        case Stance::STANDING: {
+            return "standing";
+            break;
+        }
+        case Stance::CROUCH: {
+            return "crouch";
+            break;
+        }
+        case Stance::PRONE: {
+            return "prone";
+            break;
+        }
+        }
+    }
+    return "NULL";
 }
