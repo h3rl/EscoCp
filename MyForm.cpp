@@ -1,5 +1,6 @@
 #include "MyForm.h"
 #include "debug.h"
+//#include "hwid.h"
 
 #include <thread>
 
@@ -30,8 +31,16 @@ void Main(array<String^>^ args)
 	form->setHandler(pHandler);
 	gHwnd = form->getHwnd();
 	m_hRecoil = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)recoilThread, 0, 0, 0);
-
+	if (m_hRecoil) {
+		SetThreadPriority(m_hRecoil, THREAD_PRIORITY_ABOVE_NORMAL);
+	}
+	else {
+		String^ err = "Failed to create threads\ncode: " + GetLastError();
+		MessageBoxA(NULL,sysToCstr(err), "error", MB_OK);
+		return;
+	}
 	System::Windows::Forms::Application::Run(form);
+	
 }
 
 void recoilThread()
@@ -41,15 +50,16 @@ void recoilThread()
 	{
 		if (GetAsyncKeyState(VK_LBUTTON) && GetAsyncKeyState(VK_RBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr)
 		{
+			//_D(pHandler->profiles.at(pHandler->slot)->name << " Slot " << pHandler->slot << " " << stringifyStance(pHandler->stance, false));
+			_D("shoot");
 			int force, delay;
-
 			do {
 				force = max(pHandler->profiles.at(pHandler->slot)->recoil.at(pHandler->stance),0);
 				delay = max(pHandler->profiles.at(pHandler->slot)->delay.at(pHandler->stance),1);
 				input::move(0, force);
 				std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 			} while (GetAsyncKeyState(VK_LBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr);
-			_D("Slot: " << pHandler->slot << "\nName: " << pHandler->profiles.at(pHandler->slot)->name << "\nStance: " << pHandler->stance << "\nForce:" << force << "\nDelay: " << delay);
+			_D("noshoot");
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
@@ -81,34 +91,39 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 			if (!pHandler->m_pKeys->at(key)) {
 				pHandler->m_pKeys->at(key) = true;
 
-				for (int i = 0; i < pConfig->profileList.size(); i++) {
+				for (size_t i = 0; i < pConfig->profileList.size(); i++) {
 					Profile* profile = &pConfig->profileList.at(i);
 					if (profile->onkey == key && pHandler->slot != NOSLOT ) {
 						pHandler->profiles.at(pHandler->slot) = &pConfig->profileList.at(i);
-						_D(key << " is set to slot " << pHandler->slot);
+						_D("SET " << profile->name << " to slot " << pHandler->slot);
 					}
 				}
 				if (key == pConfig->vanishkey) {
 					pConfig->vanish = !pConfig->vanish;
 					ShowWindow(gHwnd, pConfig->vanish ? SW_HIDE : SW_SHOW);
+					_D("SET gui " << (pConfig->vanish ? "hidden" : "visible"));
 				}
 				switch (key)
 				{
 				case VK_SPACE: {
 					pHandler->stance = STANDING;
+					_D("SET stance " << stringifyStance( pHandler->stance , true));
 					break;
 				}
 				case VK_KEY_1: {
 					pHandler->slot = SLOT1;
+					_D("SET slot 1");
 					break;
 				}
 				case VK_KEY_2: {
 					pHandler->slot = SLOT2;
+					_D("SET slot 2");
 					break;
 				}
 				case VK_KEY_J:
 				case VK_KEY_H:
 				case VK_KEY_G: {
+					_D("SET slot NOSLOT");
 					pHandler->slot = NOSLOT;
 					pHandler->lastSlot = NOSLOT;
 					break;
@@ -121,6 +136,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 						pHandler->lastSlot = pHandler->slot;
 						pHandler->slot = NOSLOT;
 					}
+					_D("SET slot " << pHandler->slot);
 					break;
 				}
 				case VK_KEY_C: {
@@ -130,6 +146,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					else if (pHandler->stance == CROUCH) {
 						pHandler->stance = STANDING;
 					}
+					_D("SET stance " << stringifyStance(pHandler->stance, true));
 					break;
 				}
 				case VK_KEY_Z: {
@@ -139,8 +156,10 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					else {
 						pHandler->stance = PRONE;
 					}
+					_D("SET stance " << stringifyStance(pHandler->stance, true));
 					break;
 				}
+				/*
 				case VK_DIVIDE: {
 					pHandler->status.visible = !pHandler->status.visible;
 					break;
@@ -149,6 +168,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					pHandler->status.reloadcfg = !pHandler->status.reloadcfg;
 					break;
 				}
+				*/
 				default:
 					break;
 				}

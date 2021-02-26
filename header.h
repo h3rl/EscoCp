@@ -3,6 +3,8 @@
 #define WIN32_LEAN_AND_MEAN // Exclude Extra Windows Crap
 #define WIN32_EXTRA_LEAN // Exclude More Windows Crap
 
+#define DEBUG_EXTRA_INFO
+
 /*
 
 #define FORCE 0
