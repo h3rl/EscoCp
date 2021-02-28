@@ -72,6 +72,7 @@ namespace EscoCp {
 		MyForm(void)
 		{
 			this->InitializeComponent();
+			this->setTooltips();
 
 			hWnd = static_cast<HWND>(this->Handle.ToPointer());
 		}
@@ -100,8 +101,6 @@ namespace EscoCp {
 	private: System::Windows::Forms::TextBox^ inpProfile;
 
 
-
-
 	private: System::Windows::Forms::GroupBox^ groupBox1;
 
 	private: System::Windows::Forms::Button^ btnAssign;
@@ -113,19 +112,6 @@ namespace EscoCp {
 
 
 	private: System::Windows::Forms::GroupBox^ groupBox2;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	private: System::Windows::Forms::Label^ txtActivatebtn;
 
@@ -583,7 +569,7 @@ namespace EscoCp {
 			// 
 			this->trayIcon->ContextMenuStrip = this->hmenu;
 			this->trayIcon->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"trayIcon.Icon")));
-			this->trayIcon->Text = L"trayIcon";
+			this->trayIcon->Text = L"EscoCp";
 			this->trayIcon->Visible = true;
 			this->trayIcon->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::trayIcon_MouseClick);
 			// 
@@ -614,16 +600,6 @@ namespace EscoCp {
 			this->hmenuShow->Text = L"Show";
 			this->hmenuShow->Click += gcnew System::EventHandler(this, &MyForm::hmenuShow_Click);
 			// 
-			// tootips
-			// 
-			this->ttProfilelist->SetToolTip(this->listProfiles, "Rightclick selected to delete");
-			this->ttVanishkey->SetToolTip(this->btnVanish, "Button to hide window");
-			this->ttAddprofile->SetToolTip(this->btnAddProfile, "Adds a new profile");
-			this->ttSaveall->SetToolTip(this->btnSave, "save all changes made");
-			this->ttRestoreall->SetToolTip(this->btnRestore, "restore to last saved profiles");
-			this->ttActivate->SetToolTip(this->btnActivate, "button to assign profile to weaponslot");
-			this->ttOntop->SetToolTip(this->chkOntop, "sets window on top");
-			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -642,7 +618,7 @@ namespace EscoCp {
 			this->MaximumSize = System::Drawing::Size(520, 327);
 			this->MinimumSize = System::Drawing::Size(520, 327);
 			this->Name = L"MyForm";
-			this->Text = L"EscoC";
+			this->Text = L"EscoCp";
 			this->TopMost = true;
 			this->groupBox4->ResumeLayout(false);
 			this->groupBox4->PerformLayout();
@@ -663,6 +639,15 @@ namespace EscoCp {
 			this->PerformLayout();
 
 		}
+		public: void setTooltips() {
+			this->ttProfilelist->SetToolTip(this->listProfiles, "Rightclick selected to delete");
+			this->ttVanishkey->SetToolTip(this->btnVanish, "Button to hide window");
+			this->ttAddprofile->SetToolTip(this->btnAddProfile, "Adds a new profile");
+			this->ttSaveall->SetToolTip(this->btnSave, "save all changes made");
+			this->ttRestoreall->SetToolTip(this->btnRestore, "restore to last saved profiles");
+			this->ttActivate->SetToolTip(this->btnActivate, "button to assign profile to weaponslot");
+			this->ttOntop->SetToolTip(this->chkOntop, "sets window on top");
+		}
 		public: HWND getHwnd() {
 			return this->hWnd;
 		}
@@ -682,7 +667,7 @@ namespace EscoCp {
 			}
 
 			chkOntop->Checked = cfg->onTop;
-			updateWindowPos();
+			updateWindowPos(true);
 
 			btnVanish->Text = getVanishKeyString();
 
@@ -713,12 +698,12 @@ namespace EscoCp {
 			cfg->vanish = !cfg->vanish;
 			ShowWindow(hWnd, (cfg->vanish ? SW_HIDE : SW_SHOW));
 		}
-		public: void updateWindowPos() {
+		public: void updateWindowPos(bool move) {
 			SetWindowPos(
 				hWnd,
 				(cfg->onTop ? HWND_TOPMOST : HWND_NOTOPMOST),
 				cfg->x, cfg->y, 0, 0,
-				SWP_SHOWWINDOW | SWP_DRAWFRAME | SWP_NOSIZE | SWP_NOMOVE
+				SWP_SHOWWINDOW | SWP_DRAWFRAME | SWP_NOSIZE | (move ? 0 : SWP_NOMOVE )
 			);
 		}
 #pragma endregion
@@ -750,6 +735,12 @@ namespace EscoCp {
 		listProfiles->SelectedIndex = SelectedIndex;
 	}
 	private: System::Void btnSave_Click(System::Object^ sender, System::EventArgs^ e) {
+
+		RECT rect = { NULL };
+		if (GetWindowRect(hWnd, &rect)) {
+			cfg->x = rect.left;
+			cfg->y = rect.top;
+		}
 		if (cfg->write()) {
 			writeMessage("Config saved");
 		}
@@ -769,7 +760,7 @@ namespace EscoCp {
 	}
 	private: System::Void chkOntop_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		cfg->onTop = chkOntop->Checked;
-		updateWindowPos();
+		updateWindowPos(false);
 	}
 	private: System::Void writeMessage(System::String^ message, bool error) {
 		if (error) {
@@ -919,7 +910,7 @@ namespace EscoCp {
 	}
 	private: System::Void trayIcon_MouseClick(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
 		if (e->Button == System::Windows::Forms::MouseButtons::Left) {
-			updateVisibility();
+			updateVisibility(false);
 		}
 	}
 };
