@@ -70,10 +70,10 @@ bool Config::read() {
                 lastread = "vanishkey";
                 vanishkey = j["vanishkey"].get<int>();
 
-                lastread = "x";
+                lastread = "window/x";
                 x = j["window"]["x"].get<int>();
 
-                lastread = "y";
+                lastread = "window/y";
                 y = j["window"]["y"].get<int>();
 
                 lastread = "profiles";
@@ -85,13 +85,13 @@ bool Config::read() {
                 {
                     Profile profile = Profile();
 
-                    lastread = std::to_string(i) + " name";
+                    lastread = "profiles/"+std::to_string(i) + "/name";
                     profile.name = j["profiles"][i]["name"].get<std::string>();
 
-                    lastread = std::to_string(i) + " onkey";
+                    lastread = "profiles/" + std::to_string(i) + "/onkey";
                     profile.onkey = j["profiles"][i]["onkey"].get<int>();
 
-                    lastread = std::to_string(i) + " recoil";
+                    lastread = "profiles/" + std::to_string(i) + "/recoil";
                     if (j["profiles"][i].find("recoil") == j["profiles"][i].end())
                         throw json::exception(-1, std::string("").c_str());
 
@@ -104,7 +104,7 @@ bool Config::read() {
                         profile.recoil.push_back(val);
                     }
 
-                    lastread = std::to_string(i) + " delay";
+                    lastread = "profiles/" + std::to_string(i) + "/delay";
                     if (j["profiles"][i].find("delay") == j["profiles"][i].end())
                         throw json::exception(-1, std::string("").c_str());
 
