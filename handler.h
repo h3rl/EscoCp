@@ -8,18 +8,29 @@
 #include <vector>
 #include <Windows.h>
 
-LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam);
 
 class Handler
 {
 public:
 	std::vector<Profile*> profiles = { nullptr,nullptr };
 
-	HHOOK m_hHook;
-	HANDLE m_hMessage;
-	std::map<DWORD, bool>* m_pKeys = new std::map<DWORD, bool>;
+	HHOOK kbHook;
+	HHOOK moHook;
+	HANDLE htMessage;
+	std::map<DWORD, bool>* kbKeys = new std::map<DWORD, bool>;
+	std::map<DWORD, bool>* moKeys = new std::map<DWORD, bool>{
+		{ VK_MBUTTON,false },
+		{ VK_LBUTTON,false },
+		{ VK_RBUTTON,false },
+		{ VK_XBUTTON1,false },
+		{ VK_XBUTTON2,false }
+	};
+
 public:
 
+	bool ingame;
 	bool m_bCaptureKey;
 	Stance stance;
 	Slot slot, lastSlot;

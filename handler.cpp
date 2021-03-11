@@ -2,30 +2,37 @@
 #include "MyForm.h"
 
 Handler::Handler() {
+	ingame = false;
 	slot = NOSLOT;
 	lastSlot = NOSLOT;
 	stance = STANDING;
 	m_bCaptureKey = false;
-	m_hHook = SetWindowsHookExA(WH_KEYBOARD_LL, (HOOKPROC)KeyboardProc, NULL, NULL);
-	
-	if (m_hHook)
-		_S("Keyboard Hooked");
+
+	kbHook = SetWindowsHookExA(WH_KEYBOARD_LL, (HOOKPROC)kbProc, NULL, NULL);
+	moHook = SetWindowsHookExA(WH_MOUSE_LL, (HOOKPROC)moProc, NULL, NULL);
+
+	if (kbHook && moHook)
+		_S("Hooks set");
 	else {
-		_E("Keyboard Hook");
+		_E("Hooks failed");
 		_D("er:" << GetLastError());
 		delete this;
 	}
 	
-	m_hMessage = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)messageThread, 0, 0, 0);
+	htMessage = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)messageThread, 0, 0, 0);
 }
 
 Handler::~Handler() {
-	if (m_hHook) {
-		UnhookWindowsHookEx(m_hHook);
-		m_hHook = NULL;
+	if (kbHook) {
+		UnhookWindowsHookEx(kbHook);
+		kbHook = NULL;
 	}
-	if (m_hMessage) {
-		TerminateThread(m_hMessage, 0);
+	if (moHook) {
+		UnhookWindowsHookEx(moHook);
+		moHook = NULL;
+	}
+	if (htMessage) {
+		TerminateThread(htMessage, 0);
 	}
 }
 

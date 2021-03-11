@@ -67,6 +67,9 @@ bool Config::read() {
                 lastread = "onTop";
                 onTop = j["onTop"].get<bool>();
 
+                lastread = "tabbedIn";
+                tabbedIn = j["tabbedIn"].get<bool>();
+
                 lastread = "vanishkey";
                 vanishkey = j["vanishkey"].get<int>();
 
@@ -150,6 +153,7 @@ bool Config::write() {
     std::ofstream o(CFGNAME);
     json k;
     k["onTop"] = onTop;
+    k["tabbedIn"] = tabbedIn;
     k["vanishkey"] = vanishkey;
     k["window"]["x"] = x;
     k["window"]["y"] = y;
@@ -168,6 +172,7 @@ bool Config::write() {
 void Config::create() {
     json k;
     k["onTop"] = true;
+    k["tabbedIn"] = false;
     k["window"]["x"] = 100;
     k["window"]["y"] = 100;
     k["vanishkey"] = -1;
