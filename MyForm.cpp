@@ -13,9 +13,10 @@ using namespace System::Threading;
 HWND gHwnd = NULL;
 Handler* pHandler = nullptr;
 Config* pConfig = nullptr;
-HANDLE m_hRecoil;
+HANDLE hRecoil;
+HANDLE hUpdate;
 
-void recoilThread();
+void recoilThread(); void updateThread();
 
 void Main(array<String^>^ args)
 {
@@ -30,9 +31,10 @@ void Main(array<String^>^ args)
 	form->setConfig(pConfig);
 	form->setHandler(pHandler);
 	gHwnd = form->getHwnd();
-	m_hRecoil = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)recoilThread, 0, 0, 0);
-	if (m_hRecoil) {
-		SetThreadPriority(m_hRecoil, THREAD_PRIORITY_ABOVE_NORMAL);
+	hRecoil = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)recoilThread, 0, 0, 0);
+	hUpdate = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)updateThread, 0, 0, 0);
+	if (hRecoil && hUpdate) {
+		SetThreadPriority(hRecoil, THREAD_PRIORITY_ABOVE_NORMAL);
 	}
 	else {
 		String^ err = "Failed to create threads\ncode: " + GetLastError();
@@ -40,37 +42,59 @@ void Main(array<String^>^ args)
 		return;
 	}
 	System::Windows::Forms::Application::Run(form);
-	
 }
+
+void updateThread()
+{
+	bool b;
+	for (;;)
+	{
+		if (pConfig->tabbedIn) {
+			char string[32];
+			GetWindowTextA(GetForegroundWindow(), string, sizeof(string));
+			b = std::strstr(string, "TLEGR") != NULL;
+		}
+		else {
+			b = true;
+		}
+		if (pHandler->ingame != b)
+			pHandler->ingame = b;
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(250));
+	}
+	return;
+}
+
 
 void recoilThread()
 {
 	_S("recoil thread started");
 	for (;;)
 	{
-		if (GetAsyncKeyState(VK_LBUTTON) && GetAsyncKeyState(VK_RBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr)
+		if (pHandler->ingame && pHandler->moKeys->at(VK_LBUTTON) && pHandler->moKeys->at(VK_RBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr)
 		{
 			//_D(pHandler->profiles.at(pHandler->slot)->name << " Slot " << pHandler->slot << " " << stringifyStance(pHandler->stance, false));
 			_D("shoot");
 			int force, delay;
 			do {
-				force = max(pHandler->profiles.at(pHandler->slot)->recoil.at(pHandler->stance),0);
-				delay = max(pHandler->profiles.at(pHandler->slot)->delay.at(pHandler->stance),1);
+				force = max(pHandler->profiles.at(pHandler->slot)->recoil.at(pHandler->stance), 0);
+				delay = max(pHandler->profiles.at(pHandler->slot)->delay.at(pHandler->stance), 1);
 				input::move(0, force);
 				std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-			} while (GetAsyncKeyState(VK_LBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr);
+			} while (pHandler->moKeys->at(VK_LBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr);
 			_D("noshoot");
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
+	return;
 }
 
-LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 	if (pHandler == NULL) {
 		return NULL;
 	}
 	if (nCode < 0) {
-		return CallNextHookEx(pHandler->m_hHook,nCode,wParam,lParam);
+		return CallNextHookEx(pHandler->kbHook,nCode,wParam,lParam);
 	}
 
 	LPKBDLLHOOKSTRUCT keyStruct = (LPKBDLLHOOKSTRUCT)lParam;
@@ -81,15 +105,15 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 	else {
 		DWORD key = keyStruct->vkCode;
 		//insert if key not in map
-		if (!pHandler->m_pKeys->count(key)) {
-			pHandler->m_pKeys->insert({ key,false });
+		if (!pHandler->kbKeys->count(key)) {
+			pHandler->kbKeys->insert({ key,false });
 		}
 		switch (wParam)
 		{
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN: {
-			if (!pHandler->m_pKeys->at(key)) {
-				pHandler->m_pKeys->at(key) = true;
+			if (!pHandler->kbKeys->at(key)) {
+				pHandler->kbKeys->at(key) = true;
 
 				for (size_t i = 0; i < pConfig->profileList.size(); i++) {
 					Profile* profile = &pConfig->profileList.at(i);
@@ -177,7 +201,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 		}
 		case WM_KEYUP:
 		case WM_SYSKEYUP: {
-			pHandler->m_pKeys->at(key) = false;
+			pHandler->kbKeys->at(key) = false;
 			break;
 		}
 		default:
@@ -185,5 +209,121 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 		}
 		
 	}
-	return CallNextHookEx(pHandler->m_hHook, nCode, wParam, lParam);
+	return CallNextHookEx(pHandler->kbHook, nCode, wParam, lParam);
+}
+
+#define _D(x)
+
+LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
+	if (pHandler == NULL) {
+		return NULL;
+	}
+	if (nCode < 0) {
+		return CallNextHookEx(pHandler->moHook, nCode, wParam, lParam);
+	}
+
+	LPMSLLHOOKSTRUCT mStruct = (LPMSLLHOOKSTRUCT)lParam;
+
+	if ((mStruct->flags >> LLKHF_INJECTED) & 1) {
+		//ignore injected
+	}
+	else {
+#define O(x) pHandler->moKeys->at(x)
+		switch (wParam)
+		{
+		case WM_LBUTTONDOWN: {
+			if (!O(VK_LBUTTON)) {
+				O(VK_LBUTTON) = true;
+				_D("Left_");
+			}
+
+			break;
+		}
+		case WM_LBUTTONUP: {
+			if (O(VK_LBUTTON)) {
+				O(VK_LBUTTON) = false;
+				_D("Left^");
+			}
+
+			break;
+		}
+		case WM_RBUTTONDOWN: {
+			if (!O(VK_RBUTTON)) {
+				O(VK_RBUTTON) = true;
+				_D("Right_");
+			}
+			break;
+		}
+		case WM_RBUTTONUP: {
+			if (O(VK_RBUTTON)) {
+				O(VK_RBUTTON) = false;
+				_D("Right^");
+			}
+			break;
+		}
+		case WM_XBUTTONDOWN: {
+			int ind = GET_XBUTTON_WPARAM(mStruct->mouseData);
+
+			if (ind == 1) {
+				if (!O(VK_XBUTTON1)) {
+					O(VK_XBUTTON1) = true;
+					_D("x1_");
+				}
+			}else if (ind == 2) {
+				if (!O(VK_XBUTTON2)) {
+					O(VK_XBUTTON2) = true;
+					_D("x2_");
+				}
+			}
+			break;
+		}
+		case WM_XBUTTONUP: {
+			int ind = GET_XBUTTON_WPARAM(mStruct->mouseData);
+
+			if (ind == 1) {
+				if (O(VK_XBUTTON1)) {
+					O(VK_XBUTTON1) = false;
+					_D("x1^");
+				}
+			}
+			else if (ind == 2) {
+				if (O(VK_XBUTTON2)) {
+					O(VK_XBUTTON2) = false;
+					_D("x2^");
+				}
+			}
+			break;
+		}
+		//case WM_MOUSEWHEEL: {
+		//	_D((int)mStruct->mouseData);
+		//	_D("vScroll " << ((int)mStruct->mouseData < 0 ? "down" : "up"));
+		//	break;
+		//}
+		//case WM_MOUSEHWHEEL: {
+		//	_D("hScroll" << ((int)mStruct->mouseData < 0 ? "left" : "right"));
+		//	break;
+		//}
+		case WM_MBUTTONDOWN: {
+			if (!O(VK_MBUTTON)) {
+				O(VK_MBUTTON) = true;
+				_D("Middle_");
+			}
+			break;
+		}
+		case WM_MBUTTONUP: {
+			if (O(VK_MBUTTON)) {
+				O(VK_MBUTTON) = false;
+				_D("Middle^");
+			}
+			break;
+		}
+		case WM_MOUSEMOVE:
+			break;
+		default: {
+			//_D(std::hex << wParam);
+			break;
+		}
+		}
+	}
+	return CallNextHookEx(pHandler->moHook, nCode, wParam, lParam);
 }

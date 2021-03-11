@@ -25,9 +25,11 @@ public:
     int vanishkey;
     bool vanish;
     bool onTop;
+    bool tabbedIn;
     int x, y;
 public:
     Config() {
+        tabbedIn = true;
         onTop = false;
         vanish = false;
     };
