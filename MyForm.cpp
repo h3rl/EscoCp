@@ -2,6 +2,8 @@
 #include "debug.h"
 //#include "hwid.h"
 
+#pragma (lib,"EscoLib.lib");
+
 #include <thread>
 
 using namespace System;
@@ -9,6 +11,9 @@ using namespace System::Text;
 using namespace System::Windows::Forms;
 using namespace System::Threading;
 
+
+#define ESCOLIBRARY_API __declspec(dllimport)
+extern "C" ESCOLIBRARY_API const char* getIdentifier();
 
 HWND gHwnd = NULL;
 Handler* pHandler = nullptr;
@@ -21,6 +26,11 @@ void recoilThread(); void updateThread();
 void Main(array<String^>^ args)
 {
 	createDbgConsole();
+
+	if (0 != strcmp("a0c6128e1fb4a5de6dcf420abc791fec", getIdentifier()))
+	{
+		return;
+	}
 
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
