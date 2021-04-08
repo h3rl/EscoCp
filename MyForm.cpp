@@ -2,7 +2,7 @@
 #include "debug.h"
 //#include "hwid.h"
 
-#pragma (lib,"EscoLib.lib");
+#pragma comment(lib,"EscoLib.lib")
 
 #include <thread>
 
@@ -12,8 +12,7 @@ using namespace System::Windows::Forms;
 using namespace System::Threading;
 
 
-#define ESCOLIBRARY_API __declspec(dllimport)
-extern "C" ESCOLIBRARY_API const char* getIdentifier();
+extern "C" __declspec(dllimport) const char* getIdentifier();
 
 HWND gHwnd = NULL;
 Handler* pHandler = nullptr;
@@ -83,7 +82,7 @@ void recoilThread()
 	{
 		if (pHandler->ingame && pHandler->moKeys->at(VK_LBUTTON) && pHandler->moKeys->at(VK_RBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr)
 		{
-			//_D(pHandler->profiles.at(pHandler->slot)->name << " Slot " << pHandler->slot << " " << stringifyStance(pHandler->stance, false));
+			//_D(pHandler->profiles.at(pHandler->slot)->name << " Slot " << pHandler->slot << " " << stringifyStance(pHandler->stance));
 			_D("shoot");
 			int force, delay;
 			do {
@@ -141,7 +140,7 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 				{
 				case VK_SPACE: {
 					pHandler->stance = STANDING;
-					_D("SET stance " << stringifyStance( pHandler->stance , true));
+					_D("SET stance " << stringifyStance( pHandler->stance));
 					break;
 				}
 				case VK_KEY_1: {
@@ -180,7 +179,7 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					else if (pHandler->stance == CROUCH) {
 						pHandler->stance = STANDING;
 					}
-					_D("SET stance " << stringifyStance(pHandler->stance, true));
+					_D("SET stance " << stringifyStance(pHandler->stance));
 					break;
 				}
 				case VK_KEY_Z: {
@@ -190,7 +189,7 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					else {
 						pHandler->stance = PRONE;
 					}
-					_D("SET stance " << stringifyStance(pHandler->stance, true));
+					_D("SET stance " << stringifyStance(pHandler->stance));
 					break;
 				}
 				/*

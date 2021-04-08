@@ -31,4 +31,4 @@ void _S(std::string txt);
 void _E(const char* txt);
 void _E(std::string txt);
 
-std::string stringifyStance(int stance,bool letters);
+std::string stringifyStance(int stance);
