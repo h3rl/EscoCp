@@ -56,7 +56,8 @@ void _E(std::string txt) {
 #endif
 }
 
-std::string stringifyStance(int stance,bool letters) {
+std::string stringifyStance(int stance) {
+    const bool letters = true;
     if (letters) {
         switch (stance) {
         case Stance::STANDING: {
@@ -76,15 +77,15 @@ std::string stringifyStance(int stance,bool letters) {
     else {
         switch (stance) {
         case Stance::STANDING: {
-            return "standing";
+            return "|";
             break;
         }
         case Stance::CROUCH: {
-            return "crouch";
+            return "/";
             break;
         }
         case Stance::PRONE: {
-            return "prone";
+            return "_";
             break;
         }
         }
