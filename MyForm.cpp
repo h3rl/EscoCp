@@ -223,6 +223,15 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
 #define _D(x)
 
+void kmMacro(DWORD key)
+{
+	if (key == pConfig->vanishkey) {
+		pConfig->vanish = !pConfig->vanish;
+		ShowWindow(gHwnd, pConfig->vanish ? SW_HIDE : SW_SHOW);
+		_D("SET gui " << (pConfig->vanish ? "hidden" : "visible"));
+	}
+}
+
 LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
 	if (pHandler == NULL) {
 		return NULL;
@@ -238,6 +247,7 @@ LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
 	}
 	else {
 #define O(x) pHandler->moKeys->at(x)
+
 		switch (wParam)
 		{
 		case WM_LBUTTONDOWN: {
@@ -277,11 +287,13 @@ LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
 				if (!O(VK_XBUTTON1)) {
 					O(VK_XBUTTON1) = true;
 					_D("x1_");
+					kmMacro(VK_XBUTTON1);
 				}
 			}else if (ind == 2) {
 				if (!O(VK_XBUTTON2)) {
 					O(VK_XBUTTON2) = true;
 					_D("x2_");
+					kmMacro(VK_XBUTTON2);
 				}
 			}
 			break;
@@ -316,6 +328,7 @@ LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
 			if (!O(VK_MBUTTON)) {
 				O(VK_MBUTTON) = true;
 				_D("Middle_");
+				kmMacro(VK_MBUTTON);
 			}
 			break;
 		}
