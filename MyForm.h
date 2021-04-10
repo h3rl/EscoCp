@@ -161,12 +161,12 @@ namespace EscoCp {
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->btnAddProfile = (gcnew System::Windows::Forms::Label());
 			this->groupBox4 = (gcnew System::Windows::Forms::GroupBox());
-			this->hmenu = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
-			this->hmenuExit = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->hmenuShow = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->btnRestore = (gcnew System::Windows::Forms::Button());
 			this->btnSave = (gcnew System::Windows::Forms::Button());
 			this->listProfiles = (gcnew System::Windows::Forms::ListBox());
+			this->hmenu = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
+			this->hmenuExit = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->hmenuShow = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->inpProfile = (gcnew System::Windows::Forms::TextBox());
 			this->groupBox1 = (gcnew System::Windows::Forms::GroupBox());
 			this->label12 = (gcnew System::Windows::Forms::Label());
@@ -241,33 +241,6 @@ namespace EscoCp {
 			this->groupBox4->TabStop = false;
 			this->groupBox4->Text = L" ";
 			// 
-			// hmenu
-			// 
-			this->hmenu->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->hmenu->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->hmenuExit, this->hmenuShow });
-			this->hmenu->Name = L"hmenu";
-			this->hmenu->Size = System::Drawing::Size(104, 48);
-			this->hmenu->Text = L"EscoCp";
-			// 
-			// hmenuExit
-			// 
-			this->hmenuExit->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->hmenuExit->Name = L"hmenuExit";
-			this->hmenuExit->Size = System::Drawing::Size(103, 22);
-			this->hmenuExit->Text = L"Exit";
-			this->hmenuExit->Click += gcnew System::EventHandler(this, &MyForm::hmenuExit_Click);
-			// 
-			// hmenuShow
-			// 
-			this->hmenuShow->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->hmenuShow->Name = L"hmenuShow";
-			this->hmenuShow->Size = System::Drawing::Size(103, 22);
-			this->hmenuShow->Text = L"Show";
-			this->hmenuShow->Click += gcnew System::EventHandler(this, &MyForm::hmenuShow_Click);
-			// 
 			// btnRestore
 			// 
 			this->btnRestore->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
@@ -305,6 +278,33 @@ namespace EscoCp {
 			this->listProfiles->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::listProfiles_SelectedIndexChanged);
 			this->listProfiles->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::listProfiles_MDown);
 			this->listProfiles->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::listProfiles_MUp);
+			// 
+			// hmenu
+			// 
+			this->hmenu->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->hmenu->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->hmenuExit, this->hmenuShow });
+			this->hmenu->Name = L"hmenu";
+			this->hmenu->Size = System::Drawing::Size(104, 48);
+			this->hmenu->Text = L"EscoCp";
+			// 
+			// hmenuExit
+			// 
+			this->hmenuExit->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->hmenuExit->Name = L"hmenuExit";
+			this->hmenuExit->Size = System::Drawing::Size(103, 22);
+			this->hmenuExit->Text = L"Exit";
+			this->hmenuExit->Click += gcnew System::EventHandler(this, &MyForm::hmenuExit_Click);
+			// 
+			// hmenuShow
+			// 
+			this->hmenuShow->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->hmenuShow->Name = L"hmenuShow";
+			this->hmenuShow->Size = System::Drawing::Size(103, 22);
+			this->hmenuShow->Text = L"Show";
+			this->hmenuShow->Click += gcnew System::EventHandler(this, &MyForm::hmenuShow_Click);
 			// 
 			// inpProfile
 			// 
@@ -373,6 +373,7 @@ namespace EscoCp {
 			this->btnVanish->TabIndex = 24;
 			this->btnVanish->Click += gcnew System::EventHandler(this, &MyForm::btnVanish_click);
 			this->btnVanish->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::btnVanish_KeyDown);
+			this->btnVanish->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::btnVanish_MDown);
 			// 
 			// label5
 			// 
@@ -851,6 +852,34 @@ namespace EscoCp {
 			btnVanish->Text = getVanishKeyString();
 		}
 	}
+
+	private: System::Void btnVanish_MDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		if (hHandler->m_bCaptureKey) {
+			hHandler->m_bCaptureKey = false;
+
+			switch (e->Button)
+			{
+			case Windows::Forms::MouseButtons::XButton1: {
+				cfg->vanishkey = VK_XBUTTON1;
+				break;
+			}
+			case Windows::Forms::MouseButtons::XButton2: {
+				cfg->vanishkey = VK_XBUTTON2;
+				break;
+			}
+			case Windows::Forms::MouseButtons::Middle: {
+				cfg->vanishkey = VK_MBUTTON;
+				break;
+			}
+			default:
+				break;
+			}
+
+			label1->Focus();
+			btnVanish->Text = getVanishKeyString();
+		}
+	}
+
 	private: int moveitem = NULL;
 
 	private: System::Void listProfiles_MUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
@@ -971,5 +1000,5 @@ namespace EscoCp {
 	private: System::Void chkTabbedin_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		cfg->tabbedIn = chkTabbedin->Checked;
 	}
-	};
+};
 }
