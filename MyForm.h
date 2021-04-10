@@ -68,6 +68,8 @@ namespace EscoCp {
 
 
 
+
+
 	public:
 		int SelectedIndex = -1;
 
@@ -159,6 +161,9 @@ namespace EscoCp {
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->btnAddProfile = (gcnew System::Windows::Forms::Label());
 			this->groupBox4 = (gcnew System::Windows::Forms::GroupBox());
+			this->hmenu = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
+			this->hmenuExit = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->hmenuShow = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->btnRestore = (gcnew System::Windows::Forms::Button());
 			this->btnSave = (gcnew System::Windows::Forms::Button());
 			this->listProfiles = (gcnew System::Windows::Forms::ListBox());
@@ -187,9 +192,6 @@ namespace EscoCp {
 			this->label15 = (gcnew System::Windows::Forms::Label());
 			this->chkOntop = (gcnew System::Windows::Forms::CheckBox());
 			this->trayIcon = (gcnew System::Windows::Forms::NotifyIcon(this->components));
-			this->hmenu = (gcnew System::Windows::Forms::ContextMenuStrip(this->components));
-			this->hmenuExit = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->hmenuShow = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->ttProfilelist = (gcnew System::Windows::Forms::ToolTip(this->components));
 			this->ttVanishkey = (gcnew System::Windows::Forms::ToolTip(this->components));
 			this->ttAddprofile = (gcnew System::Windows::Forms::ToolTip(this->components));
@@ -200,6 +202,7 @@ namespace EscoCp {
 			this->chkTabbedin = (gcnew System::Windows::Forms::CheckBox());
 			this->ttTabbedin = (gcnew System::Windows::Forms::ToolTip(this->components));
 			this->groupBox4->SuspendLayout();
+			this->hmenu->SuspendLayout();
 			this->groupBox1->SuspendLayout();
 			this->groupBox2->SuspendLayout();
 			this->tableLayoutPanel1->SuspendLayout();
@@ -209,7 +212,6 @@ namespace EscoCp {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->inpRecoilCrouch))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->inpRecoilProne))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->inpDelayProne))->BeginInit();
-			this->hmenu->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// btnAddProfile
@@ -238,6 +240,33 @@ namespace EscoCp {
 			this->groupBox4->TabIndex = 14;
 			this->groupBox4->TabStop = false;
 			this->groupBox4->Text = L" ";
+			// 
+			// hmenu
+			// 
+			this->hmenu->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->hmenu->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->hmenuExit, this->hmenuShow });
+			this->hmenu->Name = L"hmenu";
+			this->hmenu->Size = System::Drawing::Size(104, 48);
+			this->hmenu->Text = L"EscoCp";
+			// 
+			// hmenuExit
+			// 
+			this->hmenuExit->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->hmenuExit->Name = L"hmenuExit";
+			this->hmenuExit->Size = System::Drawing::Size(103, 22);
+			this->hmenuExit->Text = L"Exit";
+			this->hmenuExit->Click += gcnew System::EventHandler(this, &MyForm::hmenuExit_Click);
+			// 
+			// hmenuShow
+			// 
+			this->hmenuShow->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->hmenuShow->Name = L"hmenuShow";
+			this->hmenuShow->Size = System::Drawing::Size(103, 22);
+			this->hmenuShow->Text = L"Show";
+			this->hmenuShow->Click += gcnew System::EventHandler(this, &MyForm::hmenuShow_Click);
 			// 
 			// btnRestore
 			// 
@@ -275,6 +304,7 @@ namespace EscoCp {
 			this->ttProfilelist->SetToolTip(this->listProfiles, L"Rightclick selected to delete");
 			this->listProfiles->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::listProfiles_SelectedIndexChanged);
 			this->listProfiles->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::listProfiles_MDown);
+			this->listProfiles->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::listProfiles_MUp);
 			// 
 			// inpProfile
 			// 
@@ -578,33 +608,6 @@ namespace EscoCp {
 			this->trayIcon->Visible = true;
 			this->trayIcon->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::trayIcon_MouseClick);
 			// 
-			// hmenu
-			// 
-			this->hmenu->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->hmenu->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->hmenuExit, this->hmenuShow });
-			this->hmenu->Name = L"hmenu";
-			this->hmenu->Size = System::Drawing::Size(104, 48);
-			this->hmenu->Text = L"EscoCp";
-			// 
-			// hmenuExit
-			// 
-			this->hmenuExit->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->hmenuExit->Name = L"hmenuExit";
-			this->hmenuExit->Size = System::Drawing::Size(103, 22);
-			this->hmenuExit->Text = L"Exit";
-			this->hmenuExit->Click += gcnew System::EventHandler(this, &MyForm::hmenuExit_Click);
-			// 
-			// hmenuShow
-			// 
-			this->hmenuShow->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->hmenuShow->Name = L"hmenuShow";
-			this->hmenuShow->Size = System::Drawing::Size(103, 22);
-			this->hmenuShow->Text = L"Show";
-			this->hmenuShow->Click += gcnew System::EventHandler(this, &MyForm::hmenuShow_Click);
-			// 
 			// chkTabbedin
 			// 
 			this->chkTabbedin->AutoSize = true;
@@ -641,6 +644,7 @@ namespace EscoCp {
 			this->TopMost = true;
 			this->groupBox4->ResumeLayout(false);
 			this->groupBox4->PerformLayout();
+			this->hmenu->ResumeLayout(false);
 			this->groupBox1->ResumeLayout(false);
 			this->groupBox1->PerformLayout();
 			this->groupBox2->ResumeLayout(false);
@@ -653,81 +657,80 @@ namespace EscoCp {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->inpRecoilCrouch))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->inpRecoilProne))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->inpDelayProne))->EndInit();
-			this->hmenu->ResumeLayout(false);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
-		public: void setTooltips() {
-			this->ttProfilelist->SetToolTip(this->listProfiles, "Rightclick selected to delete");
-			this->ttVanishkey->SetToolTip(this->btnVanish, "Button to hide window");
-			this->ttAddprofile->SetToolTip(this->btnAddProfile, "Adds a new profile");
-			this->ttSaveall->SetToolTip(this->btnSave, "save all changes made");
-			this->ttRestoreall->SetToolTip(this->btnRestore, "restore to last saved profiles");
-			this->ttActivate->SetToolTip(this->btnActivate, "button to assign profile to weaponslot");
-			this->ttOntop->SetToolTip(this->chkOntop, "sets window on top");
-			this->ttTabbedin->SetToolTip(this->chkTabbedin, "only enable when tabbed in");
-		}
-		public: HWND getHwnd() {
-			return this->hWnd;
-		}
-		public: void setHandler(Handler* h) {
-			_S("Handler set");
-			this->hHandler = h;
-		}
-		public: void setConfig(Config* c) {
-			_S("Config set");
-			this->cfg = c;
+	public: void setTooltips() {
+		this->ttProfilelist->SetToolTip(this->listProfiles, "Rightclick selected to delete");
+		this->ttVanishkey->SetToolTip(this->btnVanish, "Button to hide window");
+		this->ttAddprofile->SetToolTip(this->btnAddProfile, "Adds a new profile");
+		this->ttSaveall->SetToolTip(this->btnSave, "save all changes made");
+		this->ttRestoreall->SetToolTip(this->btnRestore, "restore to last saved profiles");
+		this->ttActivate->SetToolTip(this->btnActivate, "button to assign profile to weaponslot");
+		this->ttOntop->SetToolTip(this->chkOntop, "sets window on top");
+		this->ttTabbedin->SetToolTip(this->chkTabbedin, "only enable when tabbed in");
+	}
+	public: HWND getHwnd() {
+		return this->hWnd;
+	}
+	public: void setHandler(Handler* h) {
+		_S("Handler set");
+		this->hHandler = h;
+	}
+	public: void setConfig(Config* c) {
+		_S("Config set");
+		this->cfg = c;
 
-			if (cfg->read()) {
-				writeMessage("Config read");
-			}
-			else {
-				writeMessage("unable to read cfg, check for typos or delete file", true);
-			}
+		if (cfg->read()) {
+			writeMessage("Config read");
+		}
+		else {
+			writeMessage("unable to read cfg, check for typos or delete file", true);
+		}
 
-			chkOntop->Checked = cfg->onTop;
-			updateWindowPos(true);
+		chkOntop->Checked = cfg->onTop;
+		updateWindowPos(true);
 
-			chkTabbedin->Checked = cfg->tabbedIn;
+		chkTabbedin->Checked = cfg->tabbedIn;
 
-			btnVanish->Text = getVanishKeyString();
+		btnVanish->Text = getVanishKeyString();
 
-			this->loadProfilesFromCfg();
+		this->loadProfilesFromCfg();
 
-			profile = new std::vector<Profile>;
-			for (size_t p = 0; p < 1; p++)
-				profile->push_back(Profile());
+		profile = new std::vector<Profile>;
+		for (size_t p = 0; p < 1; p++)
+			profile->push_back(Profile());
+	}
+	public: void SendOutputMessage(System::String^ msg) {
+		this->outMessage->Text = msg;
+	}
+		  // set names based on what profiles are in cfg
+	public: void loadProfilesFromCfg() {
+		listProfiles->Items->Clear();
+		for (size_t i = 0; i < cfg->profileList.size(); i++)
+		{
+			const char* profname = cfg->profileList[i].name.c_str();
+			System::String^ sprofname = System::String(profname).ToString();
+			listProfiles->Items->Add(sprofname);
 		}
-		public: void SendOutputMessage(System::String^ msg) {
-			this->outMessage->Text = msg;
-		}
-		// set names based on what profiles are in cfg
-		public: void loadProfilesFromCfg() {
-			listProfiles->Items->Clear();
-			for (size_t i = 0; i < cfg->profileList.size(); i++)
-			{
-				const char* profname = cfg->profileList[i].name.c_str();
-				System::String^ sprofname = System::String(profname).ToString();
-				listProfiles->Items->Add(sprofname);
-			}
-		}
-		public: void updateVisibility(bool visible) {
-			cfg->vanish = !visible;
-			ShowWindow(hWnd, (cfg->vanish ? SW_HIDE : SW_SHOW));
-		}
-		public: void updateVisibility() {
-			cfg->vanish = !cfg->vanish;
-			ShowWindow(hWnd, (cfg->vanish ? SW_HIDE : SW_SHOW));
-		}
-		public: void updateWindowPos(bool move) {
-			SetWindowPos(
-				hWnd,
-				(cfg->onTop ? HWND_TOPMOST : HWND_NOTOPMOST),
-				cfg->x, cfg->y, 0, 0,
-				SWP_SHOWWINDOW | SWP_DRAWFRAME | SWP_NOSIZE | (move ? 0 : SWP_NOMOVE )
-			);
-		}
+	}
+	public: void updateVisibility(bool visible) {
+		cfg->vanish = !visible;
+		ShowWindow(hWnd, (cfg->vanish ? SW_HIDE : SW_SHOW));
+	}
+	public: void updateVisibility() {
+		cfg->vanish = !cfg->vanish;
+		ShowWindow(hWnd, (cfg->vanish ? SW_HIDE : SW_SHOW));
+	}
+	public: void updateWindowPos(bool move) {
+		SetWindowPos(
+			hWnd,
+			(cfg->onTop ? HWND_TOPMOST : HWND_NOTOPMOST),
+			cfg->x, cfg->y, 0, 0,
+			SWP_SHOWWINDOW | SWP_DRAWFRAME | SWP_NOSIZE | (move ? 0 : SWP_NOMOVE)
+		);
+	}
 #pragma endregion
 	private: System::Void btnAddProfile_Click(System::Object^ sender, System::EventArgs^ e) {
 		Profile newProfile = Profile();
@@ -767,7 +770,7 @@ namespace EscoCp {
 			writeMessage("Config saved");
 		}
 		else {
-			writeMessage("Config was unable to save",true);
+			writeMessage("Config was unable to save", true);
 		}
 	}
 	private: System::Void btnRestore_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -848,35 +851,65 @@ namespace EscoCp {
 			btnVanish->Text = getVanishKeyString();
 		}
 	}
+	private: int moveitem = NULL;
+
+	private: System::Void listProfiles_MUp(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+		if (e->Button == System::Windows::Forms::MouseButtons::Left) {
+
+
+			//_D("moveitem" << moveitem);
+
+			if (moveitem == -1)
+				return;
+
+			int newindex = listProfiles->IndexFromPoint(e->X, e->Y);
+
+			//_D("newindex" << newindex);
+
+			if (newindex == moveitem)
+				return;
+
+			if (newindex == -1)
+			{
+				newindex = cfg->profileList.size() - 1;
+			}
+			//_D("newindex" << newindex);
+
+			std::swap(cfg->profileList.at(moveitem), cfg->profileList.at(newindex));
+
+			//_D("from" << moveitem << "to" << newindex);
+
+			this->loadProfilesFromCfg();
+		}
+	}
 	private: System::Void listProfiles_MDown(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
-		if (e->Button == System::Windows::Forms::MouseButtons::Right && SelectedIndex >= 0) {
-			RECT pos;
 
-			int wy = this->Top + 65;
-			/*
-			//this->
-			//Point cLoc = this->PointToScreen(listProfiles->Location);
-			//int ny = cLoc.Y;
-			_D(this->PointToScreen(listProfiles->Location).Y << " " << this->Top << " " << wy);
-			*/
+		this->moveitem = -1;
 
-			pos.top = this->Top + 65;
-			pos.bottom = pos.top + listProfiles->ItemHeight * (SelectedIndex + 1);
+		if (e->Button == System::Windows::Forms::MouseButtons::Left) {
 
-			int py = Cursor->Position.Y;
+			moveitem = listProfiles->IndexFromPoint(e->X, e->Y);
+		}
+		if (e->Button == System::Windows::Forms::MouseButtons::Right) {
 
-			if (py <= pos.bottom && py >= pos.top) {//within listprofiles (top,left)
+			if (SelectedIndex < 0)
+				return;
+
+			if (SelectedIndex == listProfiles->IndexFromPoint(e->X, e->Y))
+			{
 				String^ profName = gcnew String(currentProfile->name.c_str());
 
 				// Initializes the variables to pass to the MessageBox.Show method.
 				String^ message = "Really delete " + profName->ToUpper() + "?";
-				String^ caption( "Are You Sure?" );
+				String^ caption("Are You Sure?");
 				MessageBoxButtons buttons = MessageBoxButtons::YesNo;
 				MessageBoxIcon icon = MessageBoxIcon::Question;
 
 				Windows::Forms::DialogResult res = MessageBox::Show(message, caption, buttons, icon);
 				if (res == Windows::Forms::DialogResult::Yes)
 				{
+					String^ cMessage = "profile " + profName->ToUpper() + " deleted";
+					writeMessage(cMessage);
 					cfg->profileList.erase(cfg->profileList.begin() + SelectedIndex);
 					loadProfilesFromCfg();
 					SelectedIndex = -1;
@@ -891,32 +924,32 @@ namespace EscoCp {
 	private: System::Void inpDelayStanding_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->delay.at(STANDING) = maxd(  inpDelayStanding->Value , 1);
+		currentProfile->delay.at(STANDING) = maxd(inpDelayStanding->Value, 1);
 	}
 	private: System::Void inpDelayCrouch_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->delay.at(CROUCH) = maxd(inpDelayCrouch->Value,1);
+		currentProfile->delay.at(CROUCH) = maxd(inpDelayCrouch->Value, 1);
 	}
 	private: System::Void inpDelayProne_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->delay.at(PRONE) = maxd(inpDelayProne->Value,1);
+		currentProfile->delay.at(PRONE) = maxd(inpDelayProne->Value, 1);
 	}
 	private: System::Void inpRecoilStanding_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->recoil.at(STANDING) = maxd(inpRecoilStanding->Value,0);
+		currentProfile->recoil.at(STANDING) = maxd(inpRecoilStanding->Value, 0);
 	}
 	private: System::Void inpRecoilCrouch_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->recoil.at(CROUCH) = maxd(inpRecoilCrouch->Value,0);
+		currentProfile->recoil.at(CROUCH) = maxd(inpRecoilCrouch->Value, 0);
 	}
 	private: System::Void inpRecoilProne_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->recoil.at(PRONE) = maxd(inpRecoilProne->Value,0);
+		currentProfile->recoil.at(PRONE) = maxd(inpRecoilProne->Value, 0);
 	}
 	private: System::Void inpProfile_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
@@ -935,8 +968,8 @@ namespace EscoCp {
 			updateVisibility(false);
 		}
 	}
-private: System::Void chkTabbedin_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-	cfg->tabbedIn = chkTabbedin->Checked;
-}
-};
+	private: System::Void chkTabbedin_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+		cfg->tabbedIn = chkTabbedin->Checked;
+	}
+	};
 }
