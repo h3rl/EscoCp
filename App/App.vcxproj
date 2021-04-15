@@ -165,7 +165,6 @@
   <ItemGroup>
     <ClCompile Include="config.cpp" />
     <ClCompile Include="convert.cpp" />
-    <ClCompile Include="debug.cpp" />
     <ClCompile Include="handler.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="MyForm.cpp" />
@@ -173,7 +172,6 @@
   <ItemGroup>
     <ClInclude Include="config.h" />
     <ClInclude Include="convert.h" />
-    <ClInclude Include="debug.h" />
     <ClInclude Include="handler.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="input.h" />

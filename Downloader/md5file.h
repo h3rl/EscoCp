@@ -1,6 +1,6 @@
 #pragma once
 
-#include "debug.h"
+#include <debug.hpp>
 
 #include <stdio.h>
 #include <windows.h>
