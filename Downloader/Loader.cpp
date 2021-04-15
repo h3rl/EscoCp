@@ -40,6 +40,7 @@ void workerThread()
     }
     catch (const std::exception& exp)
     {
+        spinner->failed();
         _D(exp.what() << " err: " << GetLastError());
     }
 }
@@ -54,8 +55,8 @@ int main()
         spinner->update();
         Sleep(100);
     }
-    delete spinner;
     if (!versionMatch) {
+        spinner->failed();
         printf("Not up to date, downloading latest...\n");
         string dir = GetCurrentDir() + "\\" + filename;
 
@@ -78,6 +79,7 @@ int main()
         }
     }
     else {
+        spinner->success();
         printf("Up to date..\n");
     }
     printf("\n\n");
