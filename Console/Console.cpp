@@ -1,6 +1,10 @@
 // EscoIdentifier.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
+
 #include "Escolib.h"
+
+
+#pragma comment(lib,"Library.lib")
 
 #include <iostream>
 #include <Windows.h>

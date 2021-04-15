@@ -2,7 +2,7 @@
 #include "debug.h"
 //#include "hwid.h"
 
-#pragma comment(lib,"EscoLib.lib")
+#pragma comment(lib,"Library.lib")
 
 #include <thread>
 
