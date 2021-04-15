@@ -152,17 +152,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CCallback.cpp" />
-    <ClCompile Include="convert.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="network.cpp" />
-    <ClCompile Include="header.h" />
     <ClCompile Include="spinner.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CCallback.h" />
-    <ClInclude Include="convert.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="md5file.h" />
     <ClInclude Include="network.h" />

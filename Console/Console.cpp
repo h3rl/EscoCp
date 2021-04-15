@@ -33,7 +33,7 @@ extern "C" ESCOLIBRARY_API const char* getIdentifier();
 
 int main()
 {
-    SetConsoleTitle(L"EscoIdentifier");
+    SetConsoleTitleA("EscoIdentifier");
     printf("hwid: %s\n\n", getIdentifier());
     system("pause");
     return EXIT_SUCCESS;

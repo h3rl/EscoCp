@@ -1,4 +1,16 @@
-#include "header.h"
+#include "CCallback.h"
+#include "debug.h"
+#include "network.h"
+#include "util.h"
+#include "md5file.h"
+
+
+#include <WinInet.h>
+#include <WinInet.h>
+
+
+#pragma comment(lib, "wininet.lib")
+#pragma comment(lib, "urlmon.lib")
 
 string message;
 
