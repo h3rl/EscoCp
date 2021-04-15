@@ -18,7 +18,7 @@ void Spinner::update()
     printf_s("\r%s %c", msg.c_str(), spinner[cnt]);
 
     cnt++;
-    if (cnt >= sizeof(spinner))
+    if (cnt >= strlen(spinner))
     {
         cnt = 0;
     }
@@ -30,7 +30,12 @@ Spinner::Spinner(const char* message)
 
 Spinner::~Spinner()
 {
-    printf_s("\r%s Ok\n", msg.c_str());
+    if (this->bFailed) {
+        printf_s("\r%s  \n", msg.c_str());
+    }
+    else {
+        printf_s("\r%s Ok\n", msg.c_str());
+    }
 }
 
 
