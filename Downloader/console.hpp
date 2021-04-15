@@ -2,6 +2,8 @@
 #include <Windows.h>
 #include <string>
 
+#pragma comment(lib,"user32.lib")
+
 using namespace std;
 
 void setcolor(int i)
