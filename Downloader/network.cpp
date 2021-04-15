@@ -5,6 +5,10 @@
 #include <WinInet.h>
 
 
+#pragma comment(lib, "wininet.lib")
+#pragma comment(lib, "urlmon.lib")
+
+
 const char* getDataFromUrl(const char* url) {
 
     HINTERNET hOpen = NULL;

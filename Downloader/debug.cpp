@@ -5,7 +5,7 @@ HANDLE hConsole;
 
 void createDbgConsole(){
 #ifdef _DEBUG
-    SetConsoleTitle(L"Debugging Console");
+    SetConsoleTitleA("Debugging Console");
     if (!AllocConsole()) {
         // Add some error handling here.
         // You can call GetLastError() to get more info about the error.
