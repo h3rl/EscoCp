@@ -1,16 +1,22 @@
 #pragma once
 
 #include "header.h"
-#include "debug.h"
+#include <debug.hpp>
 #include "config.h"
 
 #include <map>
 #include <vector>
 #include <Windows.h>
 
+
+//	callbacks for windowshooks that capture keyboard and mouse events.
 LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam);
 
+
+/*
+*	Handler - class for handeling kb and mo input.
+*/
 class Handler
 {
 public:

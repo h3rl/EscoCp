@@ -1,5 +1,5 @@
 #include "CCallback.h"
-#include "debug.h"
+#include <debug.hpp>
 #include "network.h"
 #include "util.h"
 #include "md5file.h"
@@ -33,8 +33,6 @@ void workerThread()
 
         versionMatch = currenthash.compare(netHash) == 0;
 
-        Sleep(10000);
-
         versionChecked = true;
         return;
     }
@@ -42,6 +40,7 @@ void workerThread()
     {
         spinner->failed();
         _D(exp.what() << " err: " << GetLastError());
+        delete &exp;
     }
 }
 

@@ -1,12 +1,30 @@
-#include "debug.h"
-#include "header.h"
-#include <Windows.h>
+#pragma once
+
+#ifndef _DEBUGLIB_INITIALIZED
+#define _DEBUGLIB_INITIALIZED
+
+#include <iostream>
+#include <windows.h>
+#include <string>
+
+#ifdef _DEBUG
 
 HANDLE hConsole;
+#define _D(x) std::cout << x << std::endl;
+#define STRING(x) #x
 
-void createDbgConsole(){
+#else
+
+#define _D(x)
+#define STRING(x)
+
+#endif // _DEBUG
+
+
+
+void createDbgConsole() {
 #ifdef _DEBUG
-    SetConsoleTitle("Debugging Console");
+    SetConsoleTitleA("Debugging Console");
     if (!AllocConsole()) {
         // Add some error handling here.
         // You can call GetLastError() to get more info about the error.
@@ -56,39 +74,25 @@ void _E(std::string txt) {
 #endif
 }
 
-std::string stringifyStance(int stance) {
-    const bool letters = true;
-    if (letters) {
-        switch (stance) {
-        case Stance::STANDING: {
-            return "standing";
-            break;
-        }
-        case Stance::CROUCH: {
-            return "crouch";
-            break;
-        }
-        case Stance::PRONE: {
-            return "prone";
-            break;
-        }
-        }
+class exp : std::exception
+{
+private:
+    int code;
+public:
+    exp()
+    {
+        this->code = GetLastError();
     }
-    else {
-        switch (stance) {
-        case Stance::STANDING: {
-            return "|";
-            break;
-        }
-        case Stance::CROUCH: {
-            return "/";
-            break;
-        }
-        case Stance::PRONE: {
-            return "_";
-            break;
-        }
-        }
+public:
+    void handle()
+    {
+        std::string msg(this->what());
+        msg.append("\n err:" + std::to_string(this->code));
+
+        MessageBoxA(NULL, msg.c_str(), "exeption", MB_ICONERROR | MB_OK);
+        ExitProcess(GetLastError());
     }
-    return "NULL";
-}
+};
+
+
+#endif // !_DEBUGLIB_INITIALIZED

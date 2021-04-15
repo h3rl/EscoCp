@@ -1,10 +1,7 @@
 // EscoIdentifier.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include "Escolib.h"
-
-
-#pragma comment(lib,"Library.lib")
+#include <library.h>
 
 #include <iostream>
 #include <Windows.h>
@@ -26,10 +23,6 @@ hwid: a0c6128e1fb4a5de6dcf420abc791fec
 
 
 using namespace std;
-
-
-
-extern "C" ESCOLIBRARY_API const char* getIdentifier();
 
 int main()
 {

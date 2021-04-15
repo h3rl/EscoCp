@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Main app", "App\App.vcxproj", "{8CE5D130-2E03-44A0-862D-C0BA6D6FD624}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcxproj", "{8CE5D130-2E03-44A0-862D-C0BA6D6FD624}"
 	ProjectSection(ProjectDependencies) = postProject
 		{64B6D002-4FEA-4544-9A78-EBA607550903} = {64B6D002-4FEA-4544-9A78-EBA607550903}
 	EndProjectSection
@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader", "Downloader\Loader
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Library", "Library\Lib.vcxproj", "{64B6D002-4FEA-4544-9A78-EBA607550903}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "Test\test.vcxproj", "{A28EFAB0-9B44-4E05-AF1D-3C2A4C02B44A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +62,14 @@ Global
 		{64B6D002-4FEA-4544-9A78-EBA607550903}.Release|x64.Build.0 = Release|x64
 		{64B6D002-4FEA-4544-9A78-EBA607550903}.Release|x86.ActiveCfg = Release|Win32
 		{64B6D002-4FEA-4544-9A78-EBA607550903}.Release|x86.Build.0 = Release|Win32
+		{A28EFAB0-9B44-4E05-AF1D-3C2A4C02B44A}.Debug|x64.ActiveCfg = Debug|x64
+		{A28EFAB0-9B44-4E05-AF1D-3C2A4C02B44A}.Debug|x64.Build.0 = Debug|x64
+		{A28EFAB0-9B44-4E05-AF1D-3C2A4C02B44A}.Debug|x86.ActiveCfg = Debug|Win32
+		{A28EFAB0-9B44-4E05-AF1D-3C2A4C02B44A}.Debug|x86.Build.0 = Debug|Win32
+		{A28EFAB0-9B44-4E05-AF1D-3C2A4C02B44A}.Release|x64.ActiveCfg = Release|x64
+		{A28EFAB0-9B44-4E05-AF1D-3C2A4C02B44A}.Release|x64.Build.0 = Release|x64
+		{A28EFAB0-9B44-4E05-AF1D-3C2A4C02B44A}.Release|x86.ActiveCfg = Release|Win32
+		{A28EFAB0-9B44-4E05-AF1D-3C2A4C02B44A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

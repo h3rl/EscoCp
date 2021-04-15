@@ -8,6 +8,11 @@
 
 using json = nlohmann::json;
 
+
+/*
+*  Profile - one profile per recoilprofile.
+*/
+
 class Profile
 {
 public:
@@ -18,6 +23,10 @@ public:
     std::vector<int> recoil;
     std::vector<int> delay;
 };
+
+/*
+*  Config - class that the config file is read to.
+*/
 
 class Config {
 public:

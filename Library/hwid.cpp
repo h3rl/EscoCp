@@ -5,9 +5,10 @@
 #include "md5.h"
 #include "wmi/wmi.hpp"
 #include "wmi/wmiclasses.hpp"
-#include "debug.h"
+#include <debug.hpp>
 
-#include "Escolib.h"
+#define ESCOLIBRARY_EXPORTS
+#include <library.h>
 
 #include <iostream>
 using namespace std;
@@ -34,8 +35,8 @@ const char* i2c(int* i, size_t size) {
 
 string parseWql(string* src, string str)
 {
-	int start = src->find(str) + str.length();
-	int len = src->find("&", start) - start;
+	size_t start = src->find(str) + str.length();
+	size_t len = src->find("&", start) - start;
 	return src->substr(start, len);
 }
 

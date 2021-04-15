@@ -1,8 +1,8 @@
 #include "MyForm.h"
-#include "debug.h"
+#include <debug.hpp>
 //#include "hwid.h"
 
-#pragma comment(lib,"Library.lib")
+#include <library.h>
 
 #include <thread>
 
@@ -12,9 +12,7 @@ using namespace System::Windows::Forms;
 using namespace System::Threading;
 
 
-extern "C" __declspec(dllimport) const char* getIdentifier();
-
-HWND gHwnd = NULL;
+HWND gHwnd;
 Handler* pHandler = nullptr;
 Config* pConfig = nullptr;
 HANDLE hRecoil;

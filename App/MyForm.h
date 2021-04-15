@@ -5,7 +5,7 @@
 #include "config.h"
 #include "convert.h"
 #include "header.h"
-#include "debug.h"
+#include <debug.hpp>
 #include "handler.h"
 #include <cassert>
 #include <chrono>
@@ -900,7 +900,7 @@ namespace EscoCp {
 
 			if (newindex == -1)
 			{
-				newindex = cfg->profileList.size() - 1;
+				newindex = (int)cfg->profileList.size() - 1;
 			}
 			//_D("newindex" << newindex);
 
