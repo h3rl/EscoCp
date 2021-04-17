@@ -1,7 +1,7 @@
 #pragma once
 
 #include "header.h"
-#include <debug.hpp>
+#include "debug.h"
 #include "config.h"
 
 #include <map>

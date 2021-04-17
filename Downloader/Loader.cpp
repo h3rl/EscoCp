@@ -1,5 +1,5 @@
 #include "CCallback.h"
-#include <debug.hpp>
+#include "debug.h"
 #include "network.h"
 #include "util.h"
 #include "md5file.h"

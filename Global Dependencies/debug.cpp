@@ -1,26 +1,6 @@
-#pragma once
-
-#ifndef _DEBUGLIB_INITIALIZED
-#define _DEBUGLIB_INITIALIZED
-
-#include <iostream>
-#include <windows.h>
-#include <string>
-
-#ifdef _DEBUG
+#include "debug.h"
 
 HANDLE hConsole;
-#define _D(x) std::cout << x << std::endl;
-#define STRING(x) #x
-
-#else
-
-#define _D(x)
-#define STRING(x)
-
-#endif // _DEBUG
-
-
 
 void createDbgConsole() {
 #ifdef _DEBUG
@@ -74,25 +54,16 @@ void _E(std::string txt) {
 #endif
 }
 
-class exp : std::exception
+exp::exp()
 {
-private:
-    int code;
-public:
-    exp()
-    {
-        this->code = GetLastError();
-    }
-public:
-    void handle()
-    {
-        std::string msg(this->what());
-        msg.append("\n err:" + std::to_string(this->code));
+    this->code = GetLastError();
+}
 
-        MessageBoxA(NULL, msg.c_str(), "exeption", MB_ICONERROR | MB_OK);
-        ExitProcess(GetLastError());
-    }
-};
+void exp::handle()
+{
+    std::string msg(this->what());
+    msg.append("\n err:" + std::to_string(this->code));
 
-
-#endif // !_DEBUGLIB_INITIALIZED
+    MessageBoxA(NULL, msg.c_str(), "exeption", MB_ICONERROR | MB_OK);
+    ExitProcess(GetLastError());
+}

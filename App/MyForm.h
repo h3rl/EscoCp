@@ -5,7 +5,7 @@
 #include "config.h"
 #include "convert.h"
 #include "header.h"
-#include <debug.hpp>
+#include "debug.h"
 #include "handler.h"
 #include <cassert>
 #include <chrono>

@@ -157,3 +157,36 @@ std::string vkToString(int vk) {
     c[0] = (char)vk;
     return std::string(c);
 }
+
+const bool letters = false;
+
+const char* stringifyStance(Stance stance)
+{
+    if (letters) {
+        switch (stance)
+        {
+        case Stance::STANDING: {
+            return "standing";
+        }
+        case Stance::CROUCH: {
+            return "crouch";
+        }
+        case Stance::PRONE: {
+            return "prone";
+        }
+        }
+    }
+    switch (stance)
+    {
+    case Stance::STANDING: {
+        return "|";
+    }
+    case Stance::CROUCH: {
+        return "/";
+    }
+    case Stance::PRONE: {
+        return "_";
+    }
+    }
+    return "";
+}

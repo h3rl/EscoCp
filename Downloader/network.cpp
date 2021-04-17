@@ -1,5 +1,5 @@
 #include "network.h"
-#include <debug.hpp>
+#include "debug.h"
 
 #include <Windows.h>
 #include <WinInet.h>

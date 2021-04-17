@@ -5,11 +5,6 @@
 
 #include <map>
 
-#ifdef _DEBUG
-#define _D(x) std::cout << x << endl;
-#else
-#define _D(x);
-#endif // _DEBUG
 using namespace std;
 
 

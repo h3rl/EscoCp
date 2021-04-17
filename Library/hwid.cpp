@@ -5,7 +5,7 @@
 #include "md5.h"
 #include "wmi/wmi.hpp"
 #include "wmi/wmiclasses.hpp"
-#include <debug.hpp>
+#include "debug.h"
 
 #define ESCOLIBRARY_EXPORTS
 #include <library.h>

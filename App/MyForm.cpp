@@ -1,5 +1,5 @@
 #include "MyForm.h"
-#include <debug.hpp>
+#include "debug.h"
 //#include "hwid.h"
 
 #include <library.h>

@@ -1,5 +1,5 @@
 #include "config.h"
-#include <debug.hpp>
+#include "debug.h"
 #include "convert.h"
 
 #include <iostream>
