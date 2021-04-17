@@ -72,11 +72,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="config.json">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="..\Global Dependencies\icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
