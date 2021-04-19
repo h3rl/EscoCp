@@ -9,17 +9,15 @@ call :rxfdir "Test"
 EXIT /B %ERRORLEVEL%
 
 :rxfdir
-set s=%~1
-call :rxdir "%s%\bin"
-call :rxdir "%s%\Release"
-call :rxdir "%s%\Debug"
-call :rxdir "%s%\x64"
+call :rxdir "%~1\bin"
+call :rxdir "%~1\Release"
+call :rxdir "%~1\Debug"
+call :rxdir "%~1\x64"
 EXIT/B 0
 
 :rxdir
-set d=%~1\
-if exist %d% (
+if exist %~1\ (
   echo deleted %~1
-  rmdir /S /Q %d%
+  rmdir /S /Q %~1\
 )
 EXIT/B 0
