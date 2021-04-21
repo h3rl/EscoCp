@@ -2,6 +2,7 @@
 #include <iostream>
 #include <Windows.h>
 #include <string>
+#include <vector>
 
 #ifdef _DEBUG
 
@@ -24,6 +25,8 @@ void _S(std::string txt);
 void _E(const char* txt);
 
 void _E(std::string txt);
+
+void _DARR(std::vector<std::string> &arr);
 
 class exp : std::exception
 {

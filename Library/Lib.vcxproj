@@ -176,6 +176,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="exports.h" />
     <ClInclude Include="hwid.h" />
     <ClInclude Include="md5.h" />
   </ItemGroup>

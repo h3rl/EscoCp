@@ -76,4 +76,12 @@
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="settingsdata.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="formattedsettingsdata.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

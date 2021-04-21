@@ -1,14 +1,11 @@
 #include <Windows.h>
 #include <winuser.h>
 
-#include "hwid.h"
+#include "exports.h"
 #include "md5.h"
 #include "wmi/wmi.hpp"
 #include "wmi/wmiclasses.hpp"
 #include "debug.h"
-
-#define ESCOLIBRARY_EXPORTS
-#include <library.h>
 
 #include <iostream>
 using namespace std;
@@ -162,7 +159,7 @@ struct Identifier
 	string net;
 };
 
-extern "C" ESCOLIBRARY_API const char* getIdentifier()
+const char* getIdentifier()
 {
 	try {
 		Identifier id;
