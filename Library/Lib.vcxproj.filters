@@ -24,6 +24,9 @@
     <ClInclude Include="md5.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="exports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="hwid.cpp">

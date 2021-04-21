@@ -155,7 +155,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Global Dependencies\debug.cpp" />
+    <ClCompile Include="SRead.cpp" />
     <ClCompile Include="test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Global Dependencies\debug.h" />
+    <ClInclude Include="SRead.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GameUserSettings.ini" />
+    <None Include="jsver.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="testobj.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -197,6 +197,10 @@
   <ItemGroup>
     <Image Include="..\Global Dependencies\icon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="formattedsettingsdata.txt" />
+    <Text Include="settingsdata.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
