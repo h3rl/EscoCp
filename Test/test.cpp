@@ -72,7 +72,7 @@ public:
         _E(string("could not find " + string(strstart) +" in file"));
     }
 
-    void parsekeymap()
+    map<string, vector<KeyObj>> parsekeymap()
     {
         string str = this->content;
 
@@ -138,21 +138,13 @@ public:
             for (size_t i = 0; i < keyarr.size(); i++)
             {
                 string obj = keyarr.at(i);
-                //_D(obj)
-                if (obj == "()")
-                    continue;
 
-                KeyObj ko;
-                ko.key = getObjectValue(obj, "Key");
-
-                if (getObjectValue(obj, "bCtrl") != "")
-                    ko.bCtrl = true;
-
-                if (getObjectValue(obj, "bShift") != "")
-                    ko.bShift = true;
-
+                KeyObj ko = parseKeyObj(obj);
                 ks.push_back(ko);
             }
+
+            if(ks.size() != 0)
+                keyMap.insert({ action,ks });
 
             //_D(action << " - ")// << ks.at(0).key);
 
@@ -162,6 +154,25 @@ public:
             //_D(pos << " - " << action << " - " << keyarr);
         }
 
+        return keyMap;
+    }
+
+    KeyObj parseKeyObj(string object)
+    {
+        KeyObj ko;
+
+        size_t pos = object.find("Key=") + 4;
+
+        ko.key = object.substr( pos,object.find(')') - pos);
+
+
+        if (object.find("bShift=") != string::npos)
+            ko.bShift = true;
+
+        if (object.find("bCtrl=") != string::npos)
+            ko.bCtrl = true;
+
+        return ko;
     }
 
     string getObjectValue(string object, string specifier)
@@ -233,11 +244,37 @@ public:
     }
 };
 
+//int main()
+//{
+//    map<string, vector<KeyObj>> actionkeylist;
+//
+//    Parser parse("GameUserSettings.ini");
+//    parse.findline("CustomInputSettings");
+//    actionkeylist = parse.parsekeymap();
+//
+//    system("pause");
+//}
+
 int main()
 {
-    string toparse = "CustomInputSettings=(ActionKeyList=((ActionName=\"Walk\",Keys=((Key=LeftControl))),(ActionName=\"Sprint\",Keys=((Key=LeftShift)))))";
-    Parser parse("GameUserSettings.ini");
-    parse.findline("CustomInputSettings");
-    parse.parsekeymap();
+    string  path;
+    ofstream file;
+
+    char* libvar;
+    size_t rSize;
+    getenv_s(&rSize, NULL, 0, "appdata");
+    if (rSize != 0)
+    {
+        libvar = (char*)malloc(rSize * sizeof(char));
+        
+        getenv_s(&rSize, libvar, rSize, "appdata");
+
+        path = libvar;
+        cout << "appdata=" << path << endl;
+        path += "\\DoDLog.log";
+        cout << "path=" << path << endl;
+        file.open(path.c_str(), ios::out | ios::app);
+    }
     system("pause");
+    return 0;
 }
