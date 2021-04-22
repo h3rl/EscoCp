@@ -24,14 +24,6 @@ public:
     string content;
     ifstream ifs;
 
-    enum oType {
-        NONE,
-        STRING,
-        NUMBER,
-        OBJECT,
-        ARRAY
-    };
-
     Parser(const char* file)
     {
         if (!this->read(file))
@@ -73,8 +65,8 @@ public:
             if (line.find(strstart) == 0)
             {
                 this->content = line;
-                _D("read line");
-                break;
+                _S("read line");
+                return;
             }
         }
         _E(string("could not find " + string(strstart) +" in file"));
@@ -96,7 +88,7 @@ public:
         {
             pos = str.find("ActionName=\"", pos + 1) + len;
             
-            _D(lpos << " " << pos << " " << absEndPos);
+            //_D(lpos << " " << pos << " " << absEndPos);
 
             if (lpos > pos)
                 break;
@@ -128,6 +120,7 @@ public:
                 default:
                     break;
                 }
+
                 //_D(c << " - " << depth);
 
                 tpos += 1;
@@ -145,7 +138,8 @@ public:
             for (size_t i = 0; i < keyarr.size(); i++)
             {
                 string obj = keyarr.at(i);
-                if (obj.length() == 2)
+                //_D(obj)
+                if (obj == "()")
                     continue;
 
                 KeyObj ko;
@@ -160,20 +154,20 @@ public:
                 ks.push_back(ko);
             }
 
-            _D(action << " - " << ks.at(0).key);
+            //_D(action << " - ")// << ks.at(0).key);
 
             //keyMap.insert({ action,ks });
 
             lpos = pos;
             //_D(pos << " - " << action << " - " << keyarr);
-            _D("EE");
         }
-        _D("???");
 
     }
 
     string getObjectValue(string object, string specifier)
     {
+        //object = "(Keys=LeftShift,bShift=False,foo=(())";
+
         size_t pos = object.find(specifier) + specifier.length() + 1;
 
         if (pos > object.length())
@@ -181,7 +175,11 @@ public:
 
         size_t end = object.find_first_of("),\"", pos + 1);
 
-        return object.substr(pos, end - pos);
+        string ret = object.substr(pos, end - pos);
+        //_D(ret << " " << pos << " " << end-pos);
+
+
+        return ret;
     }
 
     vector<string> splitArray(string str)
@@ -211,7 +209,12 @@ public:
                     string element;
 
                     element = str.substr(start,pos - start + 1);
-                    arr.push_back(element);
+                    
+                    if (element.compare("()") != 0) {
+
+                        //_D(element);
+                        arr.push_back(element);
+                    }
                 }
                 break;
             }
@@ -232,6 +235,7 @@ public:
 
 int main()
 {
+    string toparse = "CustomInputSettings=(ActionKeyList=((ActionName=\"Walk\",Keys=((Key=LeftControl))),(ActionName=\"Sprint\",Keys=((Key=LeftShift)))))";
     Parser parse("GameUserSettings.ini");
     parse.findline("CustomInputSettings");
     parse.parsekeymap();
