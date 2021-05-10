@@ -20,12 +20,23 @@ HANDLE hUpdate;
 
 void recoilThread(); void updateThread();
 
+#define compare(a,b) (bool)(strcmp(a,b) == 0)
+
 void Main(array<String^>^ args)
 {
 	createDbgConsole();
 
-	if (0 != strcmp("a0c6128e1fb4a5de6dcf420abc791fec", getIdentifier()))
+	const char* computerHWID = getIdentifier();
+
+	if (
+		!compare("a0c6128e1fb4a5de6dcf420abc791fec", computerHWID) &&
+		!compare("310fea4d121a6ef431e8098e4240e16c", computerHWID)
+		)
 	{
+		_D("hwid missmatch");
+		_D(computerHWID);
+		system("pause");
+
 		return;
 	}
 
