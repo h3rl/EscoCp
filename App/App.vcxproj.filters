@@ -1,87 +1,75 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Application">
+      <UniqueIdentifier>{477fde34-2426-44a3-84ad-aff8ce231674}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Application\Helpers">
+      <UniqueIdentifier>{b52ca770-0975-436a-ab39-a6693c470b15}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Application\Forms">
+      <UniqueIdentifier>{394e1fd2-7237-4094-9c81-a9cabed75341}</UniqueIdentifier>
     </Filter>
-    <Filter Include="backend">
-      <UniqueIdentifier>{cce6a517-5901-4fa5-a7a9-afbb59cfa838}</UniqueIdentifier>
+    <Filter Include="Application\Forms\Config">
+      <UniqueIdentifier>{f274f331-4259-4303-9de2-2057fd1b2390}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\helpers">
-      <UniqueIdentifier>{2d53e5a7-4118-416d-b7b5-213aa0400bae}</UniqueIdentifier>
+    <Filter Include="Application\Forms\Handler">
+      <UniqueIdentifier>{ce09a0ce-7693-442e-906a-14ecc36b117c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Helpers\Convert">
+      <UniqueIdentifier>{d555911b-38b8-4a31-b151-e59a6b72f6c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Helpers\Debug">
+      <UniqueIdentifier>{85bb062f-2be5-44bb-8413-0a4bc5556385}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Forms\Input">
+      <UniqueIdentifier>{fc1fed7b-fe72-4cf3-a271-f647a53ded76}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MyForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="config.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="convert.cpp">
-      <Filter>Source Files\helpers</Filter>
+      <Filter>Application\Forms\Config</Filter>
     </ClCompile>
     <ClCompile Include="handler.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Application\Forms\Handler</Filter>
     </ClCompile>
-    <ClCompile Include="input.cpp">
-      <Filter>Source Files\helpers</Filter>
+    <ClCompile Include="convert.cpp">
+      <Filter>Application\Helpers\Convert</Filter>
     </ClCompile>
     <ClCompile Include="..\Global Dependencies\debug.cpp">
-      <Filter>Source Files\helpers</Filter>
+      <Filter>Application\Helpers\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Application\Forms\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="MyForm.cpp">
+      <Filter>Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MyForm.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="header.h">
+      <Filter>Application</Filter>
     </ClInclude>
     <ClInclude Include="config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Source Files\helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="convert.h">
-      <Filter>Source Files\helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="header.h">
-      <Filter>Source Files\helpers</Filter>
+      <Filter>Application\Forms\Config</Filter>
     </ClInclude>
     <ClInclude Include="handler.h">
-      <Filter>Header Files</Filter>
+      <Filter>Application\Forms\Handler</Filter>
     </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>Source Files\helpers</Filter>
+    <ClInclude Include="convert.h">
+      <Filter>Application\Helpers\Convert</Filter>
     </ClInclude>
     <ClInclude Include="..\Global Dependencies\debug.h">
-      <Filter>Source Files\helpers</Filter>
+      <Filter>Application\Helpers\Debug</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="EscoCp.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\Global Dependencies\icon.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="settingsdata.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="formattedsettingsdata.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
+    <ClInclude Include="input.h">
+      <Filter>Application\Forms\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="MyForm.h">
+      <Filter>Application</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

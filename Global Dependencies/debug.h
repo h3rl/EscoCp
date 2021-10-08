@@ -4,9 +4,13 @@
 #include <string>
 #include <vector>
 
+#pragma comment(lib,"User32.lib")
+
+#define _M(x) std::cout << x << std::endl;
+
 #ifdef _DEBUG
 
-#define _D(x) std::cout << x << std::endl;
+#define _D(x) _M(x)
 #define STRING(x) #x
 
 #else
