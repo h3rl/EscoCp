@@ -156,12 +156,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Global Dependencies\debug.cpp" />
+    <ClCompile Include="mouseoptimization.cpp" />
     <ClCompile Include="SRead.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Global Dependencies\debug.h" />
-    <ClInclude Include="SRead.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GameUserSettings.ini" />

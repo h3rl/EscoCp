@@ -24,7 +24,7 @@ void Main(array<String^>^ args)
 {
 	createDbgConsole();
 
-	if (0 != strcmp("a0c6128e1fb4a5de6dcf420abc791fec", getIdentifier()))
+	if (0 != strcmp("4d4176f24e9fbe74a325325377383c1a", getIdentifier()))
 	{
 		return;
 	}
@@ -34,7 +34,7 @@ void Main(array<String^>^ args)
 
 	pHandler = new Handler();
 	pConfig = new Config();
-	EscoCp::MyForm^ form = gcnew EscoCp::MyForm();
+	auto form = gcnew EscoCp::MyForm();
 	form->setConfig(pConfig);
 	form->setHandler(pHandler);
 	gHwnd = form->getHwnd();
@@ -67,7 +67,7 @@ void updateThread()
 		if (pHandler->ingame != b)
 			pHandler->ingame = b;
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(250));
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 	}
 	return;
 }
@@ -171,11 +171,11 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					break;
 				}
 				case VK_KEY_C: {
-					if (pHandler->stance == STANDING || pHandler->stance == PRONE) {
-						pHandler->stance = CROUCH;
-					}
-					else if (pHandler->stance == CROUCH) {
+					if (pHandler->stance == CROUCH) {
 						pHandler->stance = STANDING;
+					}
+					else {
+						pHandler->stance = CROUCH;
 					}
 					_D("SET stance " << stringifyStance(pHandler->stance));
 					break;
