@@ -1,25 +1,16 @@
-#include <Windows.h>
-#include <winuser.h>
-
-#include "hwid.h"
 #include "md5.h"
 #include "wmi/wmi.hpp"
 #include "wmi/wmiclasses.hpp"
 #include "debug.h"
 
-#define ESCOLIBRARY_EXPORTS
-#include <library.h>
-
+#include <intrin.h> //__cpuid
+#include <Windows.h>
+#include <winuser.h>
 #include <iostream>
 using namespace std;
 using namespace Wmi;
 
-#pragma comment(lib, "wbemuuid.lib")
-
-#include <intrin.h> //__cpuid
-
 #define __abs(x) (x < 0 ? -(x) : x)
-
 
 // parse and convert functions
 const char* i2c(int* i, size_t size) {
@@ -162,7 +153,7 @@ struct Identifier
 	string net;
 };
 
-extern "C" ESCOLIBRARY_API const char* getIdentifier()
+const char* getIdentifier()
 {
 	try {
 		Identifier id;
@@ -176,15 +167,16 @@ extern "C" ESCOLIBRARY_API const char* getIdentifier()
 		_D("drive: " << id.drive);
 		_D("gpu: " << id.gpu);
 		_D("mboard: " << id.mboard);
-		_D("cname: " << id.cname);
+		//_D("cname: " << id.cname);
 		_D("net: " << id.net);
 		_D("cpu: " << id.cpu);
 
-		string hwid = id.gpu + id.cpu + id.mboard + id.cname + id.net + id.drive;
+		string hwid = id.gpu + id.cpu + id.mboard + /*id.cname +*/ id.net + id.drive;
 		string hwidf = md5(hwid);
 
 		_D(endl);
 		_D("prehwid: " << hwid);
+		_D("hwid: " << hwidf);
 
 		size_t size = sizeof(char) * (hwidf.length() + 1);
 		char* buff = (char*)malloc(size);

@@ -15,35 +15,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SRead.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Global Dependencies\debug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mouseoptimization.cpp">
+    <ClCompile Include="MyForm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Global Dependencies\debug.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="MyForm.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="jsver.js">
+    <None Include="packages.config" />
+    <None Include="..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.dll">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="GameUserSettings.ini">
+    <None Include="..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.Design.dll">
       <Filter>Resource Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="testobj.txt">
+    <None Include="..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.Fonts.dll">
       <Filter>Resource Files</Filter>
-    </Text>
+    </None>
   </ItemGroup>
 </Project>

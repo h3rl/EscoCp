@@ -5,33 +5,31 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Source Files\wmi">
       <UniqueIdentifier>{1c63a1eb-bf7a-4afc-87e4-d65de2573204}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\md5">
+      <UniqueIdentifier>{34a9e0ba-949a-4484-aea6-f964d8aa02dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\hwid">
+      <UniqueIdentifier>{d6110315-029f-4237-b02e-72cf44c1e0bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hwid.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="md5.h">
+      <Filter>Source Files\md5</Filter>
+    </ClInclude>
+    <ClInclude Include="hwid.h">
+      <Filter>Source Files\hwid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Global Dependencies\library.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HwidGrabber.h">
+      <Filter>Source Files\hwid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="hwid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="md5.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -40,6 +38,15 @@
     </ClCompile>
     <ClCompile Include="..\Global Dependencies\wmi\wmiresult.cpp">
       <Filter>Source Files\wmi</Filter>
+    </ClCompile>
+    <ClCompile Include="md5.cpp">
+      <Filter>Source Files\md5</Filter>
+    </ClCompile>
+    <ClCompile Include="hwid.cpp">
+      <Filter>Source Files\hwid</Filter>
+    </ClCompile>
+    <ClCompile Include="HwidGrabber.cpp">
+      <Filter>Source Files\hwid</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

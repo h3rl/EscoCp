@@ -1,6 +1,6 @@
 #include "debug.h"
 
-HANDLE hConsole;
+HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 void createDbgConsole() {
 #ifdef _DEBUG
@@ -52,6 +52,19 @@ void _E(std::string txt) {
 #ifdef _DEBUG
     _E(txt.c_str());
 #endif
+}
+
+void _DARR(std::vector<std::string> &arr)
+{
+    std::cout << "[";
+    for (size_t i = 0; i < arr.size(); i++)
+    {
+        std::cout << arr.at(i);
+        if (i+1 < arr.size())
+            std::cout << ", ";
+
+    }
+    std::cout << "]\n";
 }
 
 exp::exp()
