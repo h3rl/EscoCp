@@ -20,12 +20,23 @@ HANDLE hUpdate;
 
 void recoilThread(); void updateThread();
 
+#define compare(a,b) (bool)(strcmp(a,b) == 0)
+
 void Main(array<String^>^ args)
 {
 	createDbgConsole();
 
-	if (0 != strcmp("4d4176f24e9fbe74a325325377383c1a", getIdentifier()))
+	const char* computerHWID = getIdentifier();
+
+	if (
+		!compare("a0c6128e1fb4a5de6dcf420abc791fec", computerHWID) &&
+		!compare("310fea4d121a6ef431e8098e4240e16c", computerHWID)
+		)
 	{
+		_D("hwid missmatch");
+		_D(computerHWID);
+		system("pause");
+
 		return;
 	}
 
@@ -34,7 +45,7 @@ void Main(array<String^>^ args)
 
 	pHandler = new Handler();
 	pConfig = new Config();
-	auto form = gcnew EscoCp::MyForm();
+	EscoCp::MyForm^ form = gcnew EscoCp::MyForm();
 	form->setConfig(pConfig);
 	form->setHandler(pHandler);
 	gHwnd = form->getHwnd();
@@ -67,7 +78,7 @@ void updateThread()
 		if (pHandler->ingame != b)
 			pHandler->ingame = b;
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		std::this_thread::sleep_for(std::chrono::milliseconds(250));
 	}
 	return;
 }
@@ -171,11 +182,11 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					break;
 				}
 				case VK_KEY_C: {
-					if (pHandler->stance == CROUCH) {
-						pHandler->stance = STANDING;
-					}
-					else {
+					if (pHandler->stance == STANDING || pHandler->stance == PRONE) {
 						pHandler->stance = CROUCH;
+					}
+					else if (pHandler->stance == CROUCH) {
+						pHandler->stance = STANDING;
 					}
 					_D("SET stance " << stringifyStance(pHandler->stance));
 					break;
