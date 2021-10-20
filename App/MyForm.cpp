@@ -201,16 +201,6 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					_D("SET stance " << stringifyStance(pHandler->stance));
 					break;
 				}
-				/*
-				case VK_DIVIDE: {
-					pHandler->status.visible = !pHandler->status.visible;
-					break;
-				}
-				case VK_HOME: {
-					pHandler->status.reloadcfg = !pHandler->status.reloadcfg;
-					break;
-				}
-				*/
 				default:
 					break;
 				}
