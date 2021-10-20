@@ -22,11 +22,11 @@ Profile::Profile() {
     this->name = "";
     this->onkey = -1;
     this->delay.clear();
-    for (size_t i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
         this->delay.push_back(1);
 
     this->recoil.clear();
-    for (size_t i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
         this->recoil.push_back(0);
 }
 
@@ -44,8 +44,12 @@ bool Config::read() {
         std::string lastread;
         json j;
         try {
+            //  parse file contents to json object
             i >> j;
-            good = true;
+
+            //  we are done reading file, close it
+            i.close();
+
         }
         catch (json::parse_error e)
         {
@@ -61,88 +65,92 @@ bool Config::read() {
             {
                 ExitProcess(0);
             }
+            ExitProcess(0);
         }
-        if (good) {
-            try {
-                lastread = "onTop";
-                onTop = j["onTop"].get<bool>();
+        
+        //  Now read the config since it is in json format. 
+        //  log last read location so we can tell user where the error is.
+        try {
+            lastread = "onTop";
+            onTop = j["onTop"].get<bool>();
 
-                lastread = "tabbedIn";
-                tabbedIn = j["tabbedIn"].get<bool>();
+            lastread = "tabbedIn";
+            tabbedIn = j["tabbedIn"].get<bool>();
 
-                lastread = "vanishkey";
-                vanishkey = j["vanishkey"].get<int>();
+            lastread = "vanishkey";
+            vanishkey = j["vanishkey"].get<int>();
 
-                lastread = "window/x";
-                x = j["window"]["x"].get<int>();
+            lastread = "window -> x";
+            x = j["window"]["x"].get<int>();
 
-                lastread = "window/y";
-                y = j["window"]["y"].get<int>();
+            lastread = "window -> y";
+            y = j["window"]["y"].get<int>();
 
-                lastread = "profiles";
-                if (j.find("profiles") == j.end())
-                    throw json::exception(-1,std::string("").c_str());
+            lastread = "profiles";
+            if (j.find("profiles") == j.end())
+                throw json::exception(-1,std::string("").c_str());
 
-                auto profileLength = j["profiles"].size();
-                for (size_t i = 0; i < profileLength; i++)
-                {
-                    Profile profile = Profile();
-
-                    lastread = "profiles/"+std::to_string(i) + "/name";
-                    profile.name = j["profiles"][i]["name"].get<std::string>();
-
-                    lastread = "profiles/" + std::to_string(i) + "/onkey";
-                    profile.onkey = j["profiles"][i]["onkey"].get<int>();
-
-                    lastread = "profiles/" + std::to_string(i) + "/recoil";
-                    if (j["profiles"][i].find("recoil") == j["profiles"][i].end())
-                        throw json::exception(-1, std::string("").c_str());
-
-                    size_t recoilLength = j["profiles"][i]["recoil"].size();
-
-                    profile.recoil.clear();
-                    for (size_t r = 0; r < recoilLength; r++)
-                    {
-                        int val = j["profiles"][i]["recoil"][r].get<int>();
-                        profile.recoil.push_back(val);
-                    }
-
-                    lastread = "profiles/" + std::to_string(i) + "/delay";
-                    if (j["profiles"][i].find("delay") == j["profiles"][i].end())
-                        throw json::exception(-1, std::string("").c_str());
-
-                    size_t delayLength = j["profiles"][i]["delay"].size();
-
-                    profile.delay.clear();
-                    for (size_t d = 0; d < recoilLength; d++)
-                    {
-                        int val = j["profiles"][i]["delay"][d].get<int>();
-                        profile.delay.push_back(val);
-                    }
-
-                    profileList.push_back(profile);
-                }
-                ret = true;
-                _S("Read Config");
-            }
-            catch (json::exception e)
+            //  now read each profile
+            auto profileLength = j["profiles"].size();
+            for (size_t i = 0; i < profileLength; i++)
             {
-                _E(e.what());
-                String^ message = String(lastread.c_str()).ToString() + " is undefined\ndefine it or delete config to make a new one\n\n"+ String(e.what()).ToString();
-                String^ caption("Parsing Config FAILED");
+                Profile profile = Profile();
 
-                Windows::Forms::DialogResult res = MessageBox::Show(message, caption, MessageBoxButtons::OK, MessageBoxIcon::Error);
-                if (res == Windows::Forms::DialogResult::OK)
+                lastread = "profiles/"+std::to_string(i) + "/name";
+                profile.name = j["profiles"][i]["name"].get<std::string>();
+
+                lastread = "profiles/" + std::to_string(i) + "/onkey";
+                profile.onkey = j["profiles"][i]["onkey"].get<int>();
+
+                lastread = "profiles/" + std::to_string(i) + "/recoil";
+                if (j["profiles"][i].find("recoil") == j["profiles"][i].end())
+                    throw json::exception(-1, std::string("").c_str());
+
+                size_t recoilLength = j["profiles"][i]["recoil"].size();
+
+                profile.recoil.clear();
+                for (size_t r = 0; r < recoilLength; r++)
                 {
-                    ExitProcess(0);
+                    int val = j["profiles"][i]["recoil"][r].get<int>();
+                    profile.recoil.push_back(val);
                 }
+
+                lastread = "profiles/" + std::to_string(i) + "/delay";
+                if (j["profiles"][i].find("delay") == j["profiles"][i].end())
+                    throw json::exception(-1, std::string("").c_str());
+
+                size_t delayLength = j["profiles"][i]["delay"].size();
+
+                profile.delay.clear();
+                for (size_t d = 0; d < recoilLength; d++)
+                {
+                    int val = j["profiles"][i]["delay"][d].get<int>();
+                    profile.delay.push_back(val);
+                }
+
+                //  done reading json object. delete it.
+                j.~basic_json();
+
+                profileList.push_back(profile);
             }
+            ret = true;
+            _S("Read Config");
         }
-        j.clear();
-        i.close();
+        catch (json::exception e)
+        {
+            _E(e.what());
+            String^ message = String(lastread.c_str()).ToString() + " is undefined\ndefine it or delete config to make a new one\n\n"+ String(e.what()).ToString();
+            String^ caption("Parsing Config FAILED");
+
+            Windows::Forms::DialogResult res = MessageBox::Show(message, caption, MessageBoxButtons::OK, MessageBoxIcon::Error);
+            if (res == Windows::Forms::DialogResult::OK)
+            {
+                ExitProcess(0);
+            }
+            ExitProcess(0);
+        }
     }
     else {
-        i.close();
         create();
         ret = read();
     }
