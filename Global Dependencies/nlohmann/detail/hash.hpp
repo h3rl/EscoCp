@@ -1,7 +1,11 @@
 #pragma once
 
-#include <cstddef> // size_t, uint8_t
+#include <cstdint> // uint8_t
+#include <cstddef> // size_t
 #include <functional> // hash
+
+#include <nlohmann/detail/macro_scope.hpp>
+#include <nlohmann/detail/value_t.hpp>
 
 namespace nlohmann
 {
@@ -100,7 +104,7 @@ std::size_t hash(const BasicJsonType& j)
             auto seed = combine(type, j.get_binary().size());
             const auto h = std::hash<bool> {}(j.get_binary().has_subtype());
             seed = combine(seed, h);
-            seed = combine(seed, j.get_binary().subtype());
+            seed = combine(seed, static_cast<std::size_t>(j.get_binary().subtype()));
             for (const auto byte : j.get_binary())
             {
                 seed = combine(seed, std::hash<std::uint8_t> {}(byte));
@@ -109,7 +113,7 @@ std::size_t hash(const BasicJsonType& j)
         }
 
         default:                   // LCOV_EXCL_LINE
-            JSON_ASSERT(false);    // LCOV_EXCL_LINE
+            JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
             return 0;              // LCOV_EXCL_LINE
     }
 }
