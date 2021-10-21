@@ -27,7 +27,22 @@ using namespace std;
 int main()
 {
     SetConsoleTitleA("EscoIdentifier");
-    printf("hwid: %s\n\n", getIdentifier());
+    const char* hwid = getIdentifier();
+    size_t size = strlen(hwid);
+
+    printf("hwid: %s\n", hwid);
+
+    auto glob = GlobalAlloc(GMEM_FIXED, size+1);
+    if (glob) {
+        memcpy(glob, hwid, size);
+
+        OpenClipboard(GetConsoleWindow());
+        EmptyClipboard();
+        SetClipboardData(CF_TEXT, glob);
+        CloseClipboard();
+        printf("copied to clipboard!\n");
+    }
+    printf("\n\n");
     system("pause");
     return EXIT_SUCCESS;
 }
