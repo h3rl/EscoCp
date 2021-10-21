@@ -25,9 +25,6 @@
     <ClInclude Include="..\Global Dependencies\library.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="HwidGrabber.h">
-      <Filter>Source Files\hwid</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -43,9 +40,6 @@
       <Filter>Source Files\md5</Filter>
     </ClCompile>
     <ClCompile Include="hwid.cpp">
-      <Filter>Source Files\hwid</Filter>
-    </ClCompile>
-    <ClCompile Include="HwidGrabber.cpp">
       <Filter>Source Files\hwid</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,43 +1,29 @@
-#include "md5.h"
-#include "wmi/wmi.hpp"
-#include "wmi/wmiclasses.hpp"
-#include "debug.h"
-
+#include "hwid.h"
 #include <intrin.h> //__cpuid
-#include <Windows.h>
-#include <winuser.h>
-#include <iostream>
-using namespace std;
-using namespace Wmi;
+#include <stdio.h>
 
-#define __abs(x) (x < 0 ? -(x) : x)
-
-// parse and convert functions
-const char* i2c(int* i, size_t size) {
-	size_t s = sizeof(char) * size;
-
-	char* buff = (char*)malloc(s);
+const char* strToCStr(string input)
+{
+	size_t size = sizeof(char) * (input.size() + 1);
+	char* buff = (char*)malloc(size);
 	if (buff) {
-		sprintf_s(buff, s, "%d", *i);
-		return buff;
+		sprintf_s(buff, size, "%s", input.c_str());
 	}
-	return "";
+	return buff;
 }
 
-string parseWql(string* src, string str)
+string parseWql(string* src, const char* str)
 {
-	size_t start = src->find(str) + str.length();
+	size_t start = src->find(str) + strlen(str);
 	size_t len = src->find("&", start) - start;
 	return src->substr(start, len);
 }
 
-// identifiergrab functions
-
-const char* getDriveSerial(const char* drive)
+string getDriveSerial(const char* drive)
 {
 	//First part gets the HDD informations
 	DWORD serialNumber = -1;
-	if (GetVolumeInformationA(
+	GetVolumeInformationA(
 		drive,
 		NULL,
 		NULL,
@@ -45,83 +31,36 @@ const char* getDriveSerial(const char* drive)
 		NULL,
 		NULL,
 		NULL,
-		NULL))
-	{
-		return i2c((int*)&serialNumber, 16);
-	}
-	return "12312";
+		NULL);
+	return to_string(serialNumber);
 }
 
-const char* getCpuHash()
+string getGpuid()
 {
-	int hash = 5;
-	int cpuinfo[4] = { 0, 0, 0, 0 }; //32 * 4
-	__cpuid(cpuinfo, 0);
+	auto gpu = retrieveWmi<Win32_VideoController>();
+	string subsys = parseWql(&gpu.PNPDeviceID, "SUBSYS_");
+	string dev = parseWql(&gpu.PNPDeviceID, "DEV_");
 
-	for (size_t s = 0; s < 4; s++)
-	{
-		hash += cpuinfo[s] + (s << 2);
-	}
-	if (hash < 0)
-		hash = hash * -1;
-
-	return i2c(&hash, 32);
+	return string(subsys + dev);
 }
 
-const char* getComputerName()
+string getBoardid()
+{
+	Win32_BaseBoard bboard = retrieveWmi<Win32_BaseBoard>();
+	return bboard.SerialNumber;
+}
+
+string getComputerName()
 {
 	char computerName[64];
 	DWORD size = sizeof(computerName);
 	GetComputerNameA(computerName, &size);
-	if (sizeof(computerName) < size)
-	{
-		return "bigcompuper";
-	}
-
-	size_t s = sizeof(char) * 64;
-
-	char* buff = (char*)malloc(s);
-	if (buff) {
-		sprintf_s(buff, s, "%s", computerName);
-		return buff;
-	}
-	return "";
+	return string(computerName);
 }
 
-const char* getGpuid()
+string getNetworkid()
 {
-	Win32_VideoController gpu = retrieveWmi<Win32_VideoController>();
-	string ret = string(parseWql(&gpu.PNPDeviceID, "SUBSYS_") + parseWql(&gpu.PNPDeviceID, "DEV_"));
-
-	size_t size = sizeof(char) * 16;
-	char* buff = (char*)malloc(size);
-
-	if (buff) {
-		sprintf_s(buff, size, "%s", ret.c_str());
-		return buff;
-	}
-	return "";
-}
-
-const char* getBoardid()
-{
-	Win32_BaseBoard bboard = retrieveWmi<Win32_BaseBoard>();
-
-	string ret = bboard.SerialNumber;
-
-	size_t size = sizeof(char) * 16;
-	char* buff = (char*)malloc(size);
-
-	if (buff) {
-		sprintf_s(buff, size, "%s", ret.c_str());
-		return buff;
-	}
-	return "";
-}
-
-const char* getNetworkid()
-{
-	string ret = "";
+	string macsum = "";
 	for (const Win32_NetworkAdapter& service : retrieveAllWmi<Win32_NetworkAdapter>())
 	{
 		if (service.PNPDeviceID.find("PCI\\") != -1)
@@ -129,71 +68,63 @@ const char* getNetworkid()
 			//cout << service.Description << endl;
 			string mac = service.MACAddress;
 			mac.erase(remove(mac.begin(), mac.end(), ':'), mac.end());
-			ret += mac;
+			macsum += mac;
 		}
 	}
-
-	size_t size = sizeof(char) * (ret.length()+1);
-	char* buff = (char*)malloc(size);
-
-	if (buff) {
-		sprintf_s(buff, size, "%s", ret.c_str());
-		return buff;
-	}
-	return "";
+	return macsum;
 }
 
-struct Identifier
+string getCpuHash()
 {
-	string drive;
-	string gpu;
-	string cpu;
-	string mboard;
-	string cname;
-	string net;
-};
+	int hash = 5;
+	int cpuinfo[4] = { 0, 0, 0, 0 }; //32 * 4
+	__cpuid(cpuinfo, 0);
+
+	for (int s = 0; s < 4; s++)
+	{
+		hash += cpuinfo[s] + (s << 2);
+	}
+	if (hash < 0)
+		hash *= -1;
+	return string(to_string(hash));
+}
 
 const char* getIdentifier()
 {
+	string cpu, drive, gpu, board, mac;
+	//string cname;
+
+	cpu = getCpuHash();
+	drive = getDriveSerial("c:\\");
+	//cname = getComputerName();
+
+	//	wmi functions
 	try {
-		Identifier id;
-		id.drive = getDriveSerial("C:\\");
-		id.gpu = getGpuid();
-		id.mboard = getBoardid();
-		id.cname = getComputerName();
-		id.net = getNetworkid();
-		id.cpu = getCpuHash();
-
-		_D("drive: " << id.drive);
-		_D("gpu: " << id.gpu);
-		_D("mboard: " << id.mboard);
-		//_D("cname: " << id.cname);
-		_D("net: " << id.net);
-		_D("cpu: " << id.cpu);
-
-		string hwid = id.gpu + id.cpu + id.mboard + /*id.cname +*/ id.net + id.drive;
-		string hwidf = md5(hwid);
-
-		_D(endl);
-		_D("prehwid: " << hwid);
-		_D("hwid: " << hwidf);
-
-		size_t size = sizeof(char) * (hwidf.length() + 1);
-		char* buff = (char*)malloc(size);
-
-		if (buff) {
-			sprintf_s(buff, size, "%s", hwidf.c_str());
-			return buff;// Program successfully completed.
-		}
+		gpu = getGpuid();
+		board = getBoardid();
+		mac = getNetworkid();
 	}
-	catch (const WmiException& ex) {
+	catch (const WmiException& ex)
+	{
+		_D("error: " << ex.errorMessage.c_str() << "\ncode: " << ex.errorCode << " (" << ex.hexErrorCode() << ")");
 
-		char buff[128];
-		sprintf_s(buff, "error: %s, Code: %s", ex.errorMessage.c_str(), ex.hexErrorCode().c_str());
-		cout << buff;
-
-		MessageBoxA(NULL, buff, "Error", MB_OK | MB_ICONERROR);
-		cerr << "error: " << ex.errorMessage << ", Code: " << ex.hexErrorCode() << endl;
+		string err = "An error occured while grabbing identifiers, code " + ex.hexErrorCode() + "\nPlease contact support!";
+		MessageBoxA(NULL, strToCStr(err), "ERROR", MB_OK | MB_ICONERROR);
+		return "";
 	}
-	return "ERROR";// Program failed
+	//_D("cname: " << cname << "\n");
+
+	_D("cpu: " << cpu);
+	_D("drive: " << drive);
+	_D("gpu: " << gpu);
+	_D("board: " << board);
+	_D("mac: " << mac << endl);
+
+	string prehwid = mac + gpu + cpu + board + drive;
+	string hwid = md5(prehwid);
+
+	_D("prehwid: " << prehwid);
+	_D("hwid: " << hwid << endl);
+
+	return strToCStr(hwid);
 }
