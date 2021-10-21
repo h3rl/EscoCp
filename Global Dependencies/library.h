@@ -1,7 +1,7 @@
-// Escolib.h - Contains declarations of hwid functions
+// library.h - Contains declarations of exported functions
 #pragma once
 
-#define ESCOLIBRARY_API __declspec(dllimport)
-#pragma comment(lib,"Library.lib")
-extern "C" ESCOLIBRARY_API const char* getIdentifier();
+#include "librarydefs.h"
 
+#pragma comment(lib,"Library.lib")
+ESCOLIB_IMPORT const char* getIdentifier();

@@ -3,15 +3,13 @@
 #include "wmi/wmi.hpp"
 #include "wmi/wmiclasses.hpp"
 #include "debug.h"
+#include "librarydefs.h"
 
-#include <intrin.h> //__cpuid
-#include <Windows.h>
-#include <winuser.h>
-#include <iostream>
+#include <string>
 using namespace std;
 using namespace Wmi;
 
-extern "C" __declspec(dllexport) const char* getIdentifier();
+ESCOLIB_EXPORT const char* getIdentifier();
 
 #define __abs(x) (x < 0 ? -(x) : x)
 
