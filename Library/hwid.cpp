@@ -1,5 +1,6 @@
 #include "hwid.h"
 #include <intrin.h> //__cpuid
+#include <Windows.h>
 #include <stdio.h>
 
 const char* strToCStr(string input)
