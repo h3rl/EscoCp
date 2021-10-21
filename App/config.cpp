@@ -22,11 +22,11 @@ Profile::Profile() {
     this->name = "";
     this->onkey = -1;
     this->delay.clear();
-    for (int i = 0; i < 3; i++)
+    for (size_t i = 0; i < 3; i++)
         this->delay.push_back(1);
 
     this->recoil.clear();
-    for (int i = 0; i < 3; i++)
+    for (size_t i = 0; i < 3; i++)
         this->recoil.push_back(0);
 }
 
@@ -36,11 +36,9 @@ bool Config::read() {
     // read JSON file
     std::ifstream i(CFGNAME);
 
-    bool ret = false;
-
     //check if file exists
     if (i.good()) {
-        bool good = false;
+
         std::string lastread;
         json j;
         try {
@@ -49,23 +47,20 @@ bool Config::read() {
 
             //  we are done reading file, close it
             i.close();
-
         }
-        catch (json::parse_error e)
+        catch (std::exception e)
         {
+            if (i) i.close();
+
             _D(e.what());
-            _D("id"<<e.id);
 
             // Initializes the variables to pass to the MessageBox.Show method.
             String^ message = "Config is not in \"json\" format...\nCheck for typos. You can also delete cfg to create a new one\n\n" + String(e.what()).ToString();
             String^ caption("Parsing Config FAILED");
 
-            Windows::Forms::DialogResult res = MessageBox::Show(message, caption, MessageBoxButtons::OK, MessageBoxIcon::Error);
-            if (res == Windows::Forms::DialogResult::OK)
-            {
-                ExitProcess(0);
-            }
+            MessageBox::Show(message, caption, MessageBoxButtons::OK, MessageBoxIcon::Error);
             ExitProcess(0);
+            return false;
         }
         
         //  Now read the config since it is in json format. 
@@ -87,74 +82,73 @@ bool Config::read() {
             y = j["window"]["y"].get<int>();
 
             lastread = "profiles";
-            if (j.find("profiles") == j.end())
-                throw json::exception(-1,std::string("").c_str());
+            if (!j.contains("profiles"))
+                throw std::exception("");
 
+            const size_t profilessize = j["profiles"].size();
             //  now read each profile
-            auto profileLength = j["profiles"].size();
-            for (size_t i = 0; i < profileLength; i++)
+            for (size_t i = 0; i < profilessize; i++)
             {
+                auto jprofile = &j["profiles"].at(i);
                 Profile profile = Profile();
 
-                lastread = "profiles/"+std::to_string(i) + "/name";
-                profile.name = j["profiles"][i]["name"].get<std::string>();
+                lastread = "profiles/" + std::to_string(i) + "/name";
+                profile.name = jprofile->at("name").get<std::string>();
 
                 lastread = "profiles/" + std::to_string(i) + "/onkey";
-                profile.onkey = j["profiles"][i]["onkey"].get<int>();
+                profile.onkey = jprofile->at("onkey").get<int>();
 
                 lastread = "profiles/" + std::to_string(i) + "/recoil";
-                if (j["profiles"][i].find("recoil") == j["profiles"][i].end())
-                    throw json::exception(-1, std::string("").c_str());
+                if (!jprofile->contains("recoil"))
+                    throw std::exception("");
 
-                size_t recoilLength = j["profiles"][i]["recoil"].size();
-
+                size_t recoilLength = jprofile->at("recoil").size();
                 profile.recoil.clear();
                 for (size_t r = 0; r < recoilLength; r++)
                 {
-                    int val = j["profiles"][i]["recoil"][r].get<int>();
+                    int val = jprofile->at("recoil").at(r).get<int>();
                     profile.recoil.push_back(val);
                 }
 
                 lastread = "profiles/" + std::to_string(i) + "/delay";
-                if (j["profiles"][i].find("delay") == j["profiles"][i].end())
-                    throw json::exception(-1, std::string("").c_str());
+                if (!jprofile->contains("delay"))
+                    throw std::exception("");
 
-                size_t delayLength = j["profiles"][i]["delay"].size();
+                size_t delayLength = jprofile->at("delay").size();
 
                 profile.delay.clear();
-                for (size_t d = 0; d < recoilLength; d++)
+                for (size_t d = 0; d < delayLength; d++)
                 {
-                    int val = j["profiles"][i]["delay"][d].get<int>();
+                    int val = jprofile->at("delay").at(d).get<int>();
                     profile.delay.push_back(val);
                 }
 
-                //  done reading json object. delete it.
-                j.~basic_json();
-
                 profileList.push_back(profile);
             }
-            ret = true;
+
             _S("Read Config");
         }
-        catch (json::exception e)
+        catch (std::exception e)
         {
+            //  got some error while parsing json,
+            //  now we give some feedback about where the error occured.
             _E(e.what());
             String^ message = String(lastread.c_str()).ToString() + " is undefined\ndefine it or delete config to make a new one\n\n"+ String(e.what()).ToString();
             String^ caption("Parsing Config FAILED");
 
-            Windows::Forms::DialogResult res = MessageBox::Show(message, caption, MessageBoxButtons::OK, MessageBoxIcon::Error);
-            if (res == Windows::Forms::DialogResult::OK)
-            {
-                ExitProcess(0);
-            }
+            MessageBox::Show(message, caption, MessageBoxButtons::OK, MessageBoxIcon::Error);
             ExitProcess(0);
+            return false;
         }
+
+        return true;
     }
     else {
+        //  file does not exist, so we create one.
         create();
-        ret = read();
+        //  then we read the created config.
+        return read();
     }
-    return ret;
 }
 
 bool Config::write() {
@@ -217,13 +211,10 @@ void Config::create() {
     }
     else {
         _E("failed to create "+std::string(CFGNAME));
-        String^ message = "failed to create "+ String(CFGNAME).ToString()+"\n\ntry running Esco as administrator";
+        String^ message = "failed to create "+ String(CFGNAME).ToString()+"\n\ntry running as administrator";
         String^ caption("Config creation failed");
 
         Windows::Forms::DialogResult res = MessageBox::Show(message, caption, MessageBoxButtons::OK, MessageBoxIcon::Error);
-        if (res == Windows::Forms::DialogResult::OK)
-        {
-            ExitProcess(0);
-        }
+        ExitProcess(0);
     }
 }
