@@ -42,7 +42,7 @@
     <ClCompile Include="input.cpp">
       <Filter>Application\Forms\Input</Filter>
     </ClCompile>
-    <ClCompile Include="MyForm.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Application</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,7 +68,7 @@
     <ClInclude Include="resource.h">
       <Filter>Application</Filter>
     </ClInclude>
-    <ClInclude Include="MyForm.h">
+    <ClInclude Include="form.h">
       <Filter>Application</Filter>
     </ClInclude>
   </ItemGroup>
