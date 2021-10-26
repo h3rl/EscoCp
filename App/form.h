@@ -11,11 +11,11 @@
 #include <chrono>
 #include <thread>
 
-namespace MetroFramework {
-	namespace Forms {
-		typedef class MetroForm;
-	}
-}
+//namespace MetroFramework {
+//	namespace Forms {
+//		typedef class MetroForm;
+//	}
+//}
 
 namespace EscoCp {
 
@@ -54,7 +54,8 @@ namespace EscoCp {
 	private: System::Windows::Forms::Label^ label12;
 	private: System::Windows::Forms::TextBox^ btnVanish;
 	private: System::Windows::Forms::Label^ label5;
-	private: System::Windows::Forms::NotifyIcon^ trayIcon;
+	private: System::Windows::Forms::NotifyIcon^ notifyIcon;
+
 	private: System::Windows::Forms::ContextMenuStrip^ hmenu;
 
 	private: System::Windows::Forms::ToolStripMenuItem^ hmenuExit;
@@ -197,7 +198,7 @@ namespace EscoCp {
 			this->outMessage = (gcnew System::Windows::Forms::Label());
 			this->label15 = (gcnew System::Windows::Forms::Label());
 			this->chkOntop = (gcnew System::Windows::Forms::CheckBox());
-			this->trayIcon = (gcnew System::Windows::Forms::NotifyIcon(this->components));
+			this->notifyIcon = (gcnew System::Windows::Forms::NotifyIcon(this->components));
 			this->ttProfilelist = (gcnew System::Windows::Forms::ToolTip(this->components));
 			this->ttVanishkey = (gcnew System::Windows::Forms::ToolTip(this->components));
 			this->ttAddprofile = (gcnew System::Windows::Forms::ToolTip(this->components));
@@ -219,12 +220,9 @@ namespace EscoCp {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->inpRecoilProne))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->inpDelayProne))->BeginInit();
 			this->SuspendLayout();
-			// 
-			// btnAddProfile
-			// 
 			this->btnAddProfile->AutoSize = true;
 			this->btnAddProfile->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->btnAddProfile->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->btnAddProfile->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9.75, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->btnAddProfile->ForeColor = System::Drawing::SystemColors::Highlight;
 			this->btnAddProfile->Location = System::Drawing::Point(6, -2);
@@ -233,9 +231,6 @@ namespace EscoCp {
 			this->btnAddProfile->TabIndex = 2;
 			this->btnAddProfile->Text = L"+ Add profile";
 			this->btnAddProfile->Click += gcnew System::EventHandler(this, &MyForm::btnAddProfile_Click);
-			// 
-			// groupBox4
-			// 
 			this->groupBox4->Controls->Add(this->btnRestore);
 			this->groupBox4->Controls->Add(this->btnSave);
 			this->groupBox4->Controls->Add(this->btnAddProfile);
@@ -246,9 +241,6 @@ namespace EscoCp {
 			this->groupBox4->TabIndex = 14;
 			this->groupBox4->TabStop = false;
 			this->groupBox4->Text = L" ";
-			// 
-			// btnRestore
-			// 
 			this->btnRestore->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->btnRestore->Location = System::Drawing::Point(79, 217);
 			this->btnRestore->Name = L"btnRestore";
@@ -257,9 +249,6 @@ namespace EscoCp {
 			this->btnRestore->Text = L"Restore all";
 			this->btnRestore->UseVisualStyleBackColor = true;
 			this->btnRestore->Click += gcnew System::EventHandler(this, &MyForm::btnRestore_Click);
-			// 
-			// btnSave
-			// 
 			this->btnSave->Location = System::Drawing::Point(6, 217);
 			this->btnSave->Name = L"btnSave";
 			this->btnSave->Size = System::Drawing::Size(70, 23);
@@ -267,9 +256,6 @@ namespace EscoCp {
 			this->btnSave->Text = L"Save all";
 			this->btnSave->UseVisualStyleBackColor = true;
 			this->btnSave->Click += gcnew System::EventHandler(this, &MyForm::btnSave_Click);
-			// 
-			// listProfiles
-			// 
 			this->listProfiles->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->listProfiles->BorderStyle = System::Windows::Forms::BorderStyle::None;
@@ -284,45 +270,30 @@ namespace EscoCp {
 			this->listProfiles->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::listProfiles_SelectedIndexChanged);
 			this->listProfiles->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::listProfiles_MDown);
 			this->listProfiles->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::listProfiles_MUp);
-			// 
-			// hmenu
-			// 
 			this->hmenu->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->hmenu->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) { this->hmenuExit, this->hmenuShow });
 			this->hmenu->Name = L"hmenu";
 			this->hmenu->Size = System::Drawing::Size(104, 48);
 			this->hmenu->Text = L"EscoCp";
-			// 
-			// hmenuExit
-			// 
 			this->hmenuExit->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->hmenuExit->Name = L"hmenuExit";
 			this->hmenuExit->Size = System::Drawing::Size(103, 22);
 			this->hmenuExit->Text = L"Exit";
 			this->hmenuExit->Click += gcnew System::EventHandler(this, &MyForm::hmenuExit_Click);
-			// 
-			// hmenuShow
-			// 
 			this->hmenuShow->Font = (gcnew System::Drawing::Font(L"Segoe UI", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->hmenuShow->Name = L"hmenuShow";
 			this->hmenuShow->Size = System::Drawing::Size(103, 22);
 			this->hmenuShow->Text = L"Show";
 			this->hmenuShow->Click += gcnew System::EventHandler(this, &MyForm::hmenuShow_Click);
-			// 
-			// inpProfile
-			// 
 			this->inpProfile->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
 			this->inpProfile->Location = System::Drawing::Point(85, 16);
 			this->inpProfile->Name = L"inpProfile";
 			this->inpProfile->Size = System::Drawing::Size(227, 20);
 			this->inpProfile->TabIndex = 16;
 			this->inpProfile->TextChanged += gcnew System::EventHandler(this, &MyForm::inpProfile_TextChanged);
-			// 
-			// groupBox1
-			// 
 			this->groupBox1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->groupBox1->AutoSize = true;
@@ -337,18 +308,12 @@ namespace EscoCp {
 			this->groupBox1->Size = System::Drawing::Size(321, 81);
 			this->groupBox1->TabIndex = 3;
 			this->groupBox1->TabStop = false;
-			// 
-			// label12
-			// 
 			this->label12->AutoSize = true;
 			this->label12->Location = System::Drawing::Point(7, 16);
 			this->label12->Name = L"label12";
 			this->label12->Size = System::Drawing::Size(67, 13);
 			this->label12->TabIndex = 22;
 			this->label12->Text = L"Profile Name";
-			// 
-			// btnActivate
-			// 
 			this->btnActivate->Cursor = System::Windows::Forms::Cursors::Default;
 			this->btnActivate->ForeColor = System::Drawing::Color::Gray;
 			this->btnActivate->Location = System::Drawing::Point(85, 45);
@@ -358,18 +323,12 @@ namespace EscoCp {
 			this->btnActivate->TabIndex = 21;
 			this->btnActivate->Click += gcnew System::EventHandler(this, &MyForm::btnActivate_Click);
 			this->btnActivate->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::btnActivate_KeyDown);
-			// 
-			// label7
-			// 
 			this->label7->AutoSize = true;
 			this->label7->Location = System::Drawing::Point(7, 48);
 			this->label7->Name = L"label7";
 			this->label7->Size = System::Drawing::Size(66, 13);
 			this->label7->TabIndex = 20;
 			this->label7->Text = L"Activate key";
-			// 
-			// btnVanish
-			// 
 			this->btnVanish->Cursor = System::Windows::Forms::Cursors::Default;
 			this->btnVanish->ForeColor = System::Drawing::Color::Gray;
 			this->btnVanish->Location = System::Drawing::Point(258, 18);
@@ -380,18 +339,12 @@ namespace EscoCp {
 			this->btnVanish->Click += gcnew System::EventHandler(this, &MyForm::btnVanish_click);
 			this->btnVanish->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::btnVanish_KeyDown);
 			this->btnVanish->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::btnVanish_MDown);
-			// 
-			// label5
-			// 
 			this->label5->AutoSize = true;
 			this->label5->Location = System::Drawing::Point(180, 21);
 			this->label5->Name = L"label5";
 			this->label5->Size = System::Drawing::Size(59, 13);
 			this->label5->TabIndex = 23;
 			this->label5->Text = L"Vanish key";
-			// 
-			// groupBox2
-			// 
 			this->groupBox2->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->groupBox2->AutoSize = true;
@@ -403,9 +356,6 @@ namespace EscoCp {
 			this->groupBox2->Size = System::Drawing::Size(321, 135);
 			this->groupBox2->TabIndex = 15;
 			this->groupBox2->TabStop = false;
-			// 
-			// tableLayoutPanel1
-			// 
 			this->tableLayoutPanel1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
 			this->tableLayoutPanel1->AutoSize = true;
@@ -437,48 +387,36 @@ namespace EscoCp {
 			this->tableLayoutPanel1->RowStyles->Add((gcnew System::Windows::Forms::RowStyle(System::Windows::Forms::SizeType::Percent, 25)));
 			this->tableLayoutPanel1->Size = System::Drawing::Size(311, 104);
 			this->tableLayoutPanel1->TabIndex = 0;
-			// 
-			// label9
-			// 
 			this->label9->AutoSize = true;
 			this->label9->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->label9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F));
+			this->label9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25));
 			this->label9->Location = System::Drawing::Point(3, 78);
 			this->label9->Name = L"label9";
 			this->label9->Size = System::Drawing::Size(56, 26);
 			this->label9->TabIndex = 11;
 			this->label9->Text = L"Prone";
 			this->label9->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
-			// 
-			// label6
-			// 
 			this->label6->AutoSize = true;
 			this->label6->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F));
+			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25));
 			this->label6->Location = System::Drawing::Point(3, 52);
 			this->label6->Name = L"label6";
 			this->label6->Size = System::Drawing::Size(56, 26);
 			this->label6->TabIndex = 10;
 			this->label6->Text = L"Crouch";
 			this->label6->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
-			// 
-			// label4
-			// 
 			this->label4->AutoSize = true;
 			this->label4->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F));
+			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25));
 			this->label4->Location = System::Drawing::Point(3, 26);
 			this->label4->Name = L"label4";
 			this->label4->Size = System::Drawing::Size(56, 26);
 			this->label4->TabIndex = 9;
 			this->label4->Text = L"Standing";
 			this->label4->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
-			// 
-			// label3
-			// 
 			this->label3->AutoSize = true;
 			this->label3->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label3->Location = System::Drawing::Point(189, 0);
 			this->label3->Name = L"label3";
@@ -486,12 +424,9 @@ namespace EscoCp {
 			this->label3->TabIndex = 8;
 			this->label3->Text = L"Force";
 			this->label3->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
-			// 
-			// label2
-			// 
 			this->label2->AutoSize = true;
 			this->label2->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label2->Location = System::Drawing::Point(65, 0);
 			this->label2->Name = L"label2";
@@ -499,12 +434,9 @@ namespace EscoCp {
 			this->label2->TabIndex = 7;
 			this->label2->Text = L"Delay(ms)";
 			this->label2->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
-			// 
-			// label1
-			// 
 			this->label1->AutoSize = true;
 			this->label1->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 8.25, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label1->Location = System::Drawing::Point(3, 0);
 			this->label1->Name = L"label1";
@@ -512,9 +444,6 @@ namespace EscoCp {
 			this->label1->TabIndex = 6;
 			this->label1->Text = L"Stance";
 			this->label1->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
-			// 
-			// inpRecoilStanding
-			// 
 			this->inpRecoilStanding->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			this->inpRecoilStanding->Location = System::Drawing::Point(203, 29);
 			this->inpRecoilStanding->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
@@ -522,9 +451,6 @@ namespace EscoCp {
 			this->inpRecoilStanding->Size = System::Drawing::Size(90, 20);
 			this->inpRecoilStanding->TabIndex = 0;
 			this->inpRecoilStanding->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpRecoilStanding_ValueChanged);
-			// 
-			// inpDelayStanding
-			// 
 			this->inpDelayStanding->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			this->inpDelayStanding->Location = System::Drawing::Point(79, 29);
 			this->inpDelayStanding->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
@@ -532,9 +458,6 @@ namespace EscoCp {
 			this->inpDelayStanding->Size = System::Drawing::Size(90, 20);
 			this->inpDelayStanding->TabIndex = 1;
 			this->inpDelayStanding->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpDelayStanding_ValueChanged);
-			// 
-			// inpDelayCrouch
-			// 
 			this->inpDelayCrouch->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			this->inpDelayCrouch->Location = System::Drawing::Point(79, 55);
 			this->inpDelayCrouch->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
@@ -542,9 +465,6 @@ namespace EscoCp {
 			this->inpDelayCrouch->Size = System::Drawing::Size(90, 20);
 			this->inpDelayCrouch->TabIndex = 2;
 			this->inpDelayCrouch->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpDelayCrouch_ValueChanged);
-			// 
-			// inpRecoilCrouch
-			// 
 			this->inpRecoilCrouch->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			this->inpRecoilCrouch->Location = System::Drawing::Point(203, 55);
 			this->inpRecoilCrouch->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
@@ -552,9 +472,6 @@ namespace EscoCp {
 			this->inpRecoilCrouch->Size = System::Drawing::Size(90, 20);
 			this->inpRecoilCrouch->TabIndex = 3;
 			this->inpRecoilCrouch->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpRecoilCrouch_ValueChanged);
-			// 
-			// inpRecoilProne
-			// 
 			this->inpRecoilProne->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			this->inpRecoilProne->Location = System::Drawing::Point(203, 81);
 			this->inpRecoilProne->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
@@ -562,9 +479,6 @@ namespace EscoCp {
 			this->inpRecoilProne->Size = System::Drawing::Size(90, 20);
 			this->inpRecoilProne->TabIndex = 5;
 			this->inpRecoilProne->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpRecoilProne_ValueChanged);
-			// 
-			// inpDelayProne
-			// 
 			this->inpDelayProne->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			this->inpDelayProne->Location = System::Drawing::Point(79, 81);
 			this->inpDelayProne->Maximum = System::Decimal(gcnew cli::array< System::Int32 >(4) { 1000, 0, 0, 0 });
@@ -572,9 +486,6 @@ namespace EscoCp {
 			this->inpDelayProne->Size = System::Drawing::Size(90, 20);
 			this->inpDelayProne->TabIndex = 4;
 			this->inpDelayProne->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpDelayProne_ValueChanged);
-			// 
-			// outMessage
-			// 
 			this->outMessage->BackColor = System::Drawing::SystemColors::ActiveCaptionText;
 			this->outMessage->ForeColor = System::Drawing::SystemColors::ControlLightLight;
 			this->outMessage->Location = System::Drawing::Point(70, 261);
@@ -582,9 +493,6 @@ namespace EscoCp {
 			this->outMessage->Size = System::Drawing::Size(424, 18);
 			this->outMessage->TabIndex = 17;
 			this->outMessage->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
-			// 
-			// label15
-			// 
 			this->label15->BackColor = System::Drawing::SystemColors::ActiveCaptionText;
 			this->label15->ForeColor = System::Drawing::SystemColors::ControlLightLight;
 			this->label15->Location = System::Drawing::Point(12, 261);
@@ -593,9 +501,6 @@ namespace EscoCp {
 			this->label15->TabIndex = 18;
 			this->label15->Text = L"Messages:";
 			this->label15->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
-			// 
-			// chkOntop
-			// 
 			this->chkOntop->AutoSize = true;
 			this->chkOntop->Checked = true;
 			this->chkOntop->CheckState = System::Windows::Forms::CheckState::Checked;
@@ -606,17 +511,10 @@ namespace EscoCp {
 			this->chkOntop->Text = L"On top";
 			this->chkOntop->UseVisualStyleBackColor = true;
 			this->chkOntop->CheckedChanged += gcnew System::EventHandler(this, &MyForm::chkOntop_CheckedChanged);
-			// 
-			// trayIcon
-			// 
-			this->trayIcon->ContextMenuStrip = this->hmenu;
-			this->trayIcon->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"trayIcon.Icon")));
-			this->trayIcon->Text = L"EscoCp";
-			this->trayIcon->Visible = true;
-			this->trayIcon->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::trayIcon_MouseClick);
-			// 
-			// chkTabbedin
-			// 
+			this->notifyIcon->ContextMenuStrip = this->hmenu;
+			this->notifyIcon->Text = L"EscoCp";
+			this->notifyIcon->Visible = true;
+			this->notifyIcon->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::trayIcon_MouseClick);
 			this->chkTabbedin->AutoSize = true;
 			this->chkTabbedin->Checked = true;
 			this->chkTabbedin->CheckState = System::Windows::Forms::CheckState::Checked;
@@ -627,9 +525,6 @@ namespace EscoCp {
 			this->chkTabbedin->Text = L"Tabbed in";
 			this->chkTabbedin->UseVisualStyleBackColor = true;
 			this->chkTabbedin->CheckedChanged += gcnew System::EventHandler(this, &MyForm::chkTabbedin_CheckedChanged);
-			// 
-			// MyForm
-			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(504, 288);
@@ -642,7 +537,6 @@ namespace EscoCp {
 			this->Controls->Add(this->groupBox2);
 			this->Controls->Add(this->groupBox1);
 			this->Controls->Add(this->groupBox4);
-			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MaximizeBox = false;
 			this->MaximumSize = System::Drawing::Size(520, 327);
 			this->MinimumSize = System::Drawing::Size(520, 327);
@@ -715,9 +609,9 @@ namespace EscoCp {
 		  // set names based on what profiles are in cfg
 	public: void loadProfilesFromCfg() {
 		listProfiles->Items->Clear();
-		for (size_t i = 0; i < cfg->profileList.size(); i++)
+		for (size_t i = 0; i < cfg->profileList->size(); i++)
 		{
-			const char* profname = cfg->profileList[i].name.c_str();
+			const char* profname = cfg->profileList->at(i)->name.c_str();
 			System::String^ sprofname = System::String(profname).ToString();
 			listProfiles->Items->Add(sprofname);
 		}
@@ -740,9 +634,9 @@ namespace EscoCp {
 	}
 #pragma endregion
 	private: System::Void btnAddProfile_Click(System::Object^ sender, System::EventArgs^ e) {
-		Profile newProfile = Profile();
-		newProfile.name = "New Profile";
-		cfg->profileList.push_back(newProfile);
+		auto newProfile = new Profile();
+		newProfile->name = "New Profile";
+		cfg->profileList->push_back(newProfile);
 		loadProfilesFromCfg();
 	}
 	private: System::Void listProfiles_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
@@ -750,15 +644,15 @@ namespace EscoCp {
 		//_D("Selected index: " << SelectedIndex);
 		if (SelectedIndex >= 0) {
 
-			currentProfile = &cfg->profileList[SelectedIndex];
+			currentProfile = cfg->profileList->at(SelectedIndex);//  [SelectedIndex];
 
-			inpDelayStanding->Value = currentProfile->delay[0];
-			inpDelayCrouch->Value = currentProfile->delay[1];
-			inpDelayProne->Value = currentProfile->delay[2];
+			inpDelayStanding->Value = currentProfile->delay->at(0);
+			inpDelayCrouch->Value = currentProfile->delay->at(1);
+			inpDelayProne->Value = currentProfile->delay->at(2);
 
-			inpRecoilStanding->Value = currentProfile->recoil[0];
-			inpRecoilCrouch->Value = currentProfile->recoil[1];
-			inpRecoilProne->Value = currentProfile->recoil[2];
+			inpRecoilStanding->Value = currentProfile->recoil->at(0);
+			inpRecoilCrouch->Value = currentProfile->recoil->at(1);
+			inpRecoilProne->Value = currentProfile->recoil->at(2);
 
 			btnActivate->Text = getOnKeyString();
 			btnVanish->Text = getVanishKeyString();
@@ -906,11 +800,11 @@ namespace EscoCp {
 
 			if (newindex == -1)
 			{
-				newindex = (int)cfg->profileList.size() - 1;
+				newindex = (int)cfg->profileList->size() - 1;
 			}
 			//_D("newindex" << newindex);
 
-			std::swap(cfg->profileList.at(moveitem), cfg->profileList.at(newindex));
+			std::swap(cfg->profileList->at(moveitem), cfg->profileList->at(newindex));
 
 			//_D("from" << moveitem << "to" << newindex);
 
@@ -945,7 +839,7 @@ namespace EscoCp {
 				{
 					String^ cMessage = "profile " + profName->ToUpper() + " deleted";
 					writeMessage(cMessage);
-					cfg->profileList.erase(cfg->profileList.begin() + SelectedIndex);
+					cfg->profileList->erase(cfg->profileList->begin() + SelectedIndex);
 					loadProfilesFromCfg();
 					SelectedIndex = -1;
 					listProfiles->SelectedIndex = -1;
@@ -959,32 +853,32 @@ namespace EscoCp {
 	private: System::Void inpDelayStanding_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->delay.at(STANDING) = maxd(inpDelayStanding->Value, 1);
+		currentProfile->delay->at(STANDING) = maxd(inpDelayStanding->Value, 1);
 	}
 	private: System::Void inpDelayCrouch_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->delay.at(CROUCH) = maxd(inpDelayCrouch->Value, 1);
+		currentProfile->delay->at(CROUCH) = maxd(inpDelayCrouch->Value, 1);
 	}
 	private: System::Void inpDelayProne_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->delay.at(PRONE) = maxd(inpDelayProne->Value, 1);
+		currentProfile->delay->at(PRONE) = maxd(inpDelayProne->Value, 1);
 	}
 	private: System::Void inpRecoilStanding_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->recoil.at(STANDING) = maxd(inpRecoilStanding->Value, 0);
+		currentProfile->recoil->at(STANDING) = maxd(inpRecoilStanding->Value, 0);
 	}
 	private: System::Void inpRecoilCrouch_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->recoil.at(CROUCH) = maxd(inpRecoilCrouch->Value, 0);
+		currentProfile->recoil->at(CROUCH) = maxd(inpRecoilCrouch->Value, 0);
 	}
 	private: System::Void inpRecoilProne_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->recoil.at(PRONE) = maxd(inpRecoilProne->Value, 0);
+		currentProfile->recoil->at(PRONE) = maxd(inpRecoilProne->Value, 0);
 	}
 	private: System::Void inpProfile_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
@@ -1006,5 +900,7 @@ namespace EscoCp {
 	private: System::Void chkTabbedin_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		cfg->tabbedIn = chkTabbedin->Checked;
 	}
+private: System::Void notifyIcon_MouseDoubleClick(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) {
+}
 };
 }
