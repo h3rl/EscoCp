@@ -166,6 +166,7 @@
   <ItemGroup>
     <None Include="GameUserSettings.ini" />
     <None Include="jsver.js" />
+    <None Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="testobj.txt" />

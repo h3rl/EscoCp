@@ -40,6 +40,9 @@
     <None Include="GameUserSettings.ini">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="util.h">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="testobj.txt">
