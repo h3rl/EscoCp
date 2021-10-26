@@ -21,18 +21,18 @@ using namespace System::Drawing;
 Profile::Profile() {
     this->name = "";
     this->onkey = -1;
-    this->delay.clear();
+    this->delay->clear();
     for (size_t i = 0; i < 3; i++)
-        this->delay.push_back(1);
+        this->delay->push_back(1);
 
-    this->recoil.clear();
+    this->recoil->clear();
     for (size_t i = 0; i < 3; i++)
-        this->recoil.push_back(0);
+        this->recoil->push_back(0);
 }
 
 bool Config::read() {
     // empty profile list
-    profileList.clear();
+    profileList->clear();
     // read JSON file
     std::ifstream i(CFGNAME);
 
@@ -90,24 +90,24 @@ bool Config::read() {
             for (size_t i = 0; i < profilessize; i++)
             {
                 auto jprofile = &j["profiles"].at(i);
-                Profile profile = Profile();
+                Profile* profile = new Profile();
 
                 lastread = "profiles/" + std::to_string(i) + "/name";
-                profile.name = jprofile->at("name").get<std::string>();
+                profile->name = jprofile->at("name").get<std::string>();
 
                 lastread = "profiles/" + std::to_string(i) + "/onkey";
-                profile.onkey = jprofile->at("onkey").get<int>();
+                profile->onkey = jprofile->at("onkey").get<int>();
 
                 lastread = "profiles/" + std::to_string(i) + "/recoil";
                 if (!jprofile->contains("recoil"))
                     throw std::exception("");
 
                 size_t recoilLength = jprofile->at("recoil").size();
-                profile.recoil.clear();
+                profile->recoil->clear();
                 for (size_t r = 0; r < recoilLength; r++)
                 {
                     int val = jprofile->at("recoil").at(r).get<int>();
-                    profile.recoil.push_back(val);
+                    profile->recoil->push_back(val);
                 }
 
                 lastread = "profiles/" + std::to_string(i) + "/delay";
@@ -116,14 +116,14 @@ bool Config::read() {
 
                 size_t delayLength = jprofile->at("delay").size();
 
-                profile.delay.clear();
+                profile->delay->clear();
                 for (size_t d = 0; d < delayLength; d++)
                 {
                     int val = jprofile->at("delay").at(d).get<int>();
-                    profile.delay.push_back(val);
+                    profile->delay->push_back(val);
                 }
 
-                profileList.push_back(profile);
+                profileList->push_back(profile);
             }
 
             _S("Read Config");
@@ -159,12 +159,13 @@ bool Config::write() {
     k["vanishkey"] = vanishkey;
     k["window"]["x"] = x;
     k["window"]["y"] = y;
-    for (size_t i = 0; i < profileList.size(); i++) {
+    for (size_t i = 0; i < profileList->size(); i++) {
+        auto profile = profileList->at(i);
         k["profiles"].push_back(json::object());
-        k["profiles"][i]["name"] = profileList.at(i).name;
-        k["profiles"][i]["onkey"] = profileList.at(i).onkey;
-        k["profiles"][i]["recoil"] = profileList.at(i).recoil;
-        k["profiles"][i]["delay"] = profileList.at(i).delay;
+        k["profiles"][i]["name"] = profile->name;
+        k["profiles"][i]["onkey"] = profile->onkey;
+        k["profiles"][i]["recoil"] = *profile->recoil;
+        k["profiles"][i]["delay"] = *profile->delay;
     }
     o << std::setw(2) << k << std::endl;
     o.close();
@@ -179,28 +180,35 @@ void Config::create() {
     k["window"]["y"] = 100;
     k["vanishkey"] = -1;
 
-    std::vector<Profile> testprofs = { Profile(), Profile(), Profile() };
-    testprofs.at(0).name = "Passive";
-    testprofs.at(0).onkey = 117;
-    testprofs.at(0).recoil = { 0, 0, 0 };
-    testprofs.at(0).delay = { 5, 5, 5 };
+    std::vector<Profile*>* testprofiles;
+    testprofiles->push_back(new Profile());
 
-    testprofs.at(1).name = "Light";
-    testprofs.at(1).onkey = 118;
-    testprofs.at(1).recoil = { 5, 4, 3 };
-    testprofs.at(1).delay = { 5, 5, 5 };
+    auto profile = testprofiles->at(0);
+    profile->name = "Passive";
+    profile->onkey = 117;
+    profile->recoil = &std::vector<int>{ 0, 0, 0 };
+    profile->delay = &std::vector<int>{ 5, 5, 5 };
 
-    testprofs.at(2).name = "Heavy";
-    testprofs.at(2).onkey = 119;
-    testprofs.at(2).recoil = { 11, 9, 7 };
-    testprofs.at(2).delay = { 4, 4, 4 };
+    testprofiles->push_back(new Profile());
+    profile = testprofiles->at(1);
+    profile->name = "Light";
+    profile->onkey = 118;
+    profile->recoil = &std::vector<int>{ 5, 4, 3 };
+    profile->delay = &std::vector<int>{ 5, 5, 5 };
 
-    for (size_t i = 0; i < testprofs.size(); i++) {
+    testprofiles->push_back(new Profile());
+    profile = testprofiles->at(2);
+    profile->name = "Heavy";
+    profile->onkey = 119;
+    profile->recoil = &std::vector<int>{ 11, 9, 7 };
+    profile->delay = &std::vector<int>{ 4, 4, 4 };
+
+    for (size_t i = 0; i < testprofiles->size(); i++) {
         k["profiles"].push_back(json::object());
-        k["profiles"][i]["name"] = testprofs.at(i).name;
-        k["profiles"][i]["onkey"] = testprofs.at(i).onkey;
-        k["profiles"][i]["recoil"] = testprofs.at(i).recoil;
-        k["profiles"][i]["delay"] = testprofs.at(i).delay;
+        k["profiles"][i]["name"] = testprofiles->at(i)->name;
+        k["profiles"][i]["onkey"] = testprofiles->at(i)->onkey;
+        k["profiles"][i]["recoil"] = *testprofiles->at(i)->recoil;
+        k["profiles"][i]["delay"] = *testprofiles->at(i)->delay;
     }
 
     std::ofstream o(CFGNAME);

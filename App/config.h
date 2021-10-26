@@ -20,8 +20,8 @@ public:
     ~Profile(){};
     std::string name;
     int onkey;
-    std::vector<int> recoil;
-    std::vector<int> delay;
+    std::vector<int>* recoil = new std::vector<int>(3);
+    std::vector<int>* delay = new std::vector<int>(3);
 };
 
 /*
@@ -30,7 +30,7 @@ public:
 
 class Config {
 public:
-    std::vector<Profile> profileList;
+    std::vector<Profile*>* profileList;
     int vanishkey;
     bool vanish;
     bool onTop;
@@ -38,6 +38,7 @@ public:
     int x, y;
 public:
     Config() {
+        profileList = new std::vector<Profile*>();
         tabbedIn = true;
         onTop = false;
         vanish = false;

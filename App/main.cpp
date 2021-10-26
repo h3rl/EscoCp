@@ -11,23 +11,26 @@ using namespace System::Windows::Forms;
 using namespace System::Threading;
 
 
-HWND gHwnd;
-Handler* pHandler = nullptr;
-Config* pConfig = nullptr;
+HWND hwnd;
+Handler* handler = nullptr;
+Config* config = nullptr;
 HANDLE hRecoil, hUpdate;
 
 void recoilThread(); void updateThread();
 
 #define __strcmp(a,b) (bool)(strcmp(a,b) == 0)
 
+#define slot handler->slot
+#define lastslot handler->lastSlot
+#define stance handler->stance
+
 void Main(array<String^>^ args)
 {
 	createDbgConsole();
 
 	const char* computerHWID = getIdentifier();
-
 	if (
-		!__strcmp("a0c6128e1fb4a5de6dcf420abc791fec", computerHWID) &&	//desktop
+		!__strcmp("b71acd838bac692a9640f0ed793f7441", computerHWID) &&	//desktop
 		!__strcmp("5ad528ce2d9b88d3396cbfea97ef5029", computerHWID)		//laptop
 		)
 	{
@@ -42,12 +45,13 @@ void Main(array<String^>^ args)
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
-	pHandler = new Handler();
-	pConfig = new Config();
+	handler = new Handler();
+
+	config = new Config();
 	auto form = gcnew EscoCp::MyForm();
-	form->setConfig(pConfig);
-	form->setHandler(pHandler);
-	gHwnd = form->getHwnd();
+	form->setConfig(config);
+	form->setHandler(handler);
+	hwnd = form->getHwnd();
 	hRecoil = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)recoilThread, 0, 0, 0);
 	hUpdate = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)updateThread, 0, 0, 0);
 	if (hRecoil && hUpdate) {
@@ -61,6 +65,13 @@ void Main(array<String^>^ args)
 	System::Windows::Forms::Application::Run(form);
 }
 
+struct GlobalVariables
+{
+	bool recoil = false;
+	int force = 0;
+	int delay = 1;
+} globals, locals;
+
 void updateThread()
 {
 	bool g_doRecoil = false;
@@ -68,15 +79,19 @@ void updateThread()
 	int g_delay;
 	for (;;)
 	{
+		if (GetAsyncKeyState(VK_KEY_P))
+		{
+			ExitProcess(0);
+		}
 		bool l_doRecoil = true;
-		if (!pHandler->moKeys->at(VK_LBUTTON) ||
-			!pHandler->moKeys->at(VK_RBUTTON) ||
-			pHandler->slot == NOSLOT ||
-			pHandler->profiles.at(pHandler->slot) == nullptr) {
+		if (!handler->mouse->at(VK_LBUTTON) ||
+			!handler->mouse->at(VK_RBUTTON) ||
+			slot == NOSLOT ||
+			handler->profiles->at(slot) == nullptr) {
 			l_doRecoil = false;
 		}
 
-		if (pConfig->tabbedIn) {
+		if (config->tabbedIn) {
 			char string[32];
 			GetWindowTextA(GetForegroundWindow(), string, sizeof(string));
 			bool isInPubg = std::strstr(string, "TLEGR") != NULL;
@@ -84,14 +99,14 @@ void updateThread()
 				l_doRecoil = false;
 		}
 		if (l_doRecoil) {
-			Profile* profile = pHandler->profiles.at(pHandler->slot);
-			g_force = max(profile->recoil.at(pHandler->stance), 0);
-			g_delay = max(profile->delay.at(pHandler->stance), 1);
+			Profile* profile = handler->profiles->at(slot);
+			g_force = max(profile->recoil->at(stance), 0);
+			g_delay = max(profile->delay->at(stance), 1);
 		}
 
 
 		g_doRecoil = l_doRecoil;
-		std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 	return;
 }
@@ -102,15 +117,15 @@ void recoilThread()
 	_S("recoil thread started");
 	for (;;)
 	{
-		if (pHandler->ingame && pHandler->moKeys->at(VK_LBUTTON) && pHandler->moKeys->at(VK_RBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr)
+		if (handler->ingame && handler->mouse->at(VK_LBUTTON) && handler->mouse->at(VK_RBUTTON) && slot != NOSLOT && handler->profiles->at(slot) != nullptr)
 		{
 			int force, delay;
 			do {
-				force = max(pHandler->profiles.at(pHandler->slot)->recoil.at(pHandler->stance), 0);
-				delay = max(pHandler->profiles.at(pHandler->slot)->delay.at(pHandler->stance), 1);
+				force = max(handler->profiles->at(slot)->recoil->at(stance), 0);
+				delay = max(handler->profiles->at(slot)->delay->at(stance), 1);
 				input::move(0, force);
 				std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-			} while (pHandler->moKeys->at(VK_LBUTTON) && pHandler->slot != NOSLOT && pHandler->profiles.at(pHandler->slot) != nullptr);
+			} while (handler->mouse->at(VK_LBUTTON) && slot != NOSLOT && handler->profiles->at(slot) != nullptr);
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
@@ -118,11 +133,11 @@ void recoilThread()
 }
 
 LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
-	if (pHandler == NULL) {
+	if (handler == NULL) {
 		return NULL;
 	}
 	if (nCode < 0) {
-		return CallNextHookEx(pHandler->kbHook,nCode,wParam,lParam);
+		return CallNextHookEx(handler->kbHook,nCode,wParam,lParam);
 	}
 
 	LPKBDLLHOOKSTRUCT keyStruct = (LPKBDLLHOOKSTRUCT)lParam;
@@ -133,82 +148,92 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 	else {
 		DWORD key = keyStruct->vkCode;
 		//insert if key not in map
-		if (!pHandler->kbKeys->count(key)) {
-			pHandler->kbKeys->insert({ key,false });
+		if (!handler->keyboard->count(key)) {
+			handler->keyboard->insert({ key,false });
 		}
+
 		switch (wParam)
 		{
 		case WM_KEYDOWN:
 		case WM_SYSKEYDOWN: {
-			if (!pHandler->kbKeys->at(key)) {
-				pHandler->kbKeys->at(key) = true;
+			if (!handler->keyboard->at(key)) {
+				handler->keyboard->at(key) = true;
 
-				for (size_t i = 0; i < pConfig->profileList.size(); i++) {
-					Profile* profile = &pConfig->profileList.at(i);
-					if (profile->onkey == key && pHandler->slot != NOSLOT ) {
-						pHandler->profiles.at(pHandler->slot) = &pConfig->profileList.at(i);
-						_D("SET " << profile->name << " to slot " << pHandler->slot);
+				for (size_t i = 0; i < config->profileList->size(); i++) {
+					Profile* profile = config->profileList->at(i);
+					if (profile->onkey == key && slot != NOSLOT ) {
+						handler->profiles->at(slot) = config->profileList->at(i);
+						_D("SET " << profile->name << " to slot " << slot);
 					}
 				}
-				if (key == pConfig->vanishkey) {
-					pConfig->vanish = !pConfig->vanish;
-					ShowWindow(gHwnd, pConfig->vanish ? SW_HIDE : SW_SHOW);
-					_D("SET gui " << (pConfig->vanish ? "hidden" : "visible"));
+				if (key == config->vanishkey) {
+					config->vanish = !config->vanish;
+					ShowWindow(hwnd, config->vanish ? SW_HIDE : SW_SHOW);
+					_D("SET gui " << (config->vanish ? "hidden" : "visible"));
 				}
+
+				//	Default actionkeys
 				switch (key)
 				{
 				case VK_SPACE: {
-					pHandler->stance = STANDING;
-					_D("SET stance " << stringifyStance( pHandler->stance));
+					stance = STANDING;
+					_D("SET stance " << stringifyStance( stance));
 					break;
 				}
 				case VK_KEY_1: {
-					pHandler->slot = SLOT1;
+					slot = SLOT1;
 					_D("SET slot 1");
 					break;
 				}
 				case VK_KEY_2: {
-					pHandler->slot = SLOT2;
+					slot = SLOT2;
 					_D("SET slot 2");
 					break;
 				}
+				case VK_KEY_3:
+				case VK_KEY_4: {
+					slot = NOSLOT;
+					_D("SET slot none");
+					break;
+				}
+				//	Grenades
 				case VK_KEY_J:
 				case VK_KEY_H:
 				case VK_KEY_G: {
-					_D("SET slot NOSLOT");
-					pHandler->slot = NOSLOT;
-					pHandler->lastSlot = NOSLOT;
+					_D("SET slot none");
+					slot = NOSLOT;
+					lastslot = NOSLOT;
 					break;
 				}
 				case VK_KEY_X: {
-					if (pHandler->slot == NOSLOT) {
-						pHandler->slot = pHandler->lastSlot;
+					if (slot == NOSLOT) {
+						slot = lastslot;
 					}
 					else {
-						pHandler->lastSlot = pHandler->slot;
-						pHandler->slot = NOSLOT;
+						lastslot = slot;
+						slot = NOSLOT;
 					}
-					_D("SET slot " << pHandler->slot);
+					_D("SET slot " << slot);
 					break;
 				}
 				case VK_KEY_C: {
-					if (pHandler->stance == STANDING || pHandler->stance == PRONE) {
-						pHandler->stance = CROUCH;
+					if (stance == STANDING || stance == PRONE) {
+						stance = CROUCH;
 					}
-					else if (pHandler->stance == CROUCH) {
-						pHandler->stance = STANDING;
+					else if (stance == CROUCH) {
+						stance = STANDING;
 					}
-					_D("SET stance " << stringifyStance(pHandler->stance));
+					_D("SET stance " << stringifyStance(stance));
 					break;
 				}
 				case VK_KEY_Z: {
-					if (pHandler->stance == PRONE) {
-						pHandler->stance = STANDING;
+					if (stance == PRONE) {
+						stance = STANDING;
 					}
 					else {
-						pHandler->stance = PRONE;
+						stance = PRONE;
 					}
-					_D("SET stance " << stringifyStance(pHandler->stance));
+					_D("SET stance " << stringifyStance(stance));
 					break;
 				}
 				default:
@@ -219,7 +244,7 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 		}
 		case WM_KEYUP:
 		case WM_SYSKEYUP: {
-			pHandler->kbKeys->at(key) = false;
+			handler->keyboard->at(key) = false;
 			break;
 		}
 		default:
@@ -227,26 +252,27 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 		}
 		
 	}
-	return CallNextHookEx(pHandler->kbHook, nCode, wParam, lParam);
+	return CallNextHookEx(handler->kbHook, nCode, wParam, lParam);
 }
 
 #define _D(x)
 
 void kmMacro(DWORD key)
 {
-	if (key == pConfig->vanishkey) {
-		pConfig->vanish = !pConfig->vanish;
-		ShowWindow(gHwnd, pConfig->vanish ? SW_HIDE : SW_SHOW);
-		_D("SET gui " << (pConfig->vanish ? "hidden" : "visible"));
+	if (key == config->vanishkey) {
+		config->vanish = !config->vanish;
+		ShowWindow(hwnd, config->vanish ? SW_HIDE : SW_SHOW);
+		_D("SET gui " << (config->vanish ? "hidden" : "visible"));
 	}
 }
 
+
 LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
-	if (pHandler == NULL) {
+	if (handler == NULL) {
 		return NULL;
 	}
 	if (nCode < 0) {
-		return CallNextHookEx(pHandler->moHook, nCode, wParam, lParam);
+		return CallNextHookEx(handler->moHook, nCode, wParam, lParam);
 	}
 
 	LPMSLLHOOKSTRUCT mStruct = (LPMSLLHOOKSTRUCT)lParam;
@@ -255,36 +281,36 @@ LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
 		//ignore injected
 	}
 	else {
-#define O(x) pHandler->moKeys->at(x)
+#define keyDown(x) handler->mouse->at(x)
 
 		switch (wParam)
 		{
 		case WM_LBUTTONDOWN: {
-			if (!O(VK_LBUTTON)) {
-				O(VK_LBUTTON) = true;
+			if (!keyDown(VK_LBUTTON)) {
+				keyDown(VK_LBUTTON) = true;
 				_D("Left_");
 			}
 
 			break;
 		}
 		case WM_LBUTTONUP: {
-			if (O(VK_LBUTTON)) {
-				O(VK_LBUTTON) = false;
+			if (keyDown(VK_LBUTTON)) {
+				keyDown(VK_LBUTTON) = false;
 				_D("Left^");
 			}
 
 			break;
 		}
 		case WM_RBUTTONDOWN: {
-			if (!O(VK_RBUTTON)) {
-				O(VK_RBUTTON) = true;
+			if (!keyDown(VK_RBUTTON)) {
+				keyDown(VK_RBUTTON) = true;
 				_D("Right_");
 			}
 			break;
 		}
 		case WM_RBUTTONUP: {
-			if (O(VK_RBUTTON)) {
-				O(VK_RBUTTON) = false;
+			if (keyDown(VK_RBUTTON)) {
+				keyDown(VK_RBUTTON) = false;
 				_D("Right^");
 			}
 			break;
@@ -293,14 +319,14 @@ LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
 			int ind = GET_XBUTTON_WPARAM(mStruct->mouseData);
 
 			if (ind == 1) {
-				if (!O(VK_XBUTTON1)) {
-					O(VK_XBUTTON1) = true;
+				if (!keyDown(VK_XBUTTON1)) {
+					keyDown(VK_XBUTTON1) = true;
 					_D("x1_");
 					kmMacro(VK_XBUTTON1);
 				}
 			}else if (ind == 2) {
-				if (!O(VK_XBUTTON2)) {
-					O(VK_XBUTTON2) = true;
+				if (!keyDown(VK_XBUTTON2)) {
+					keyDown(VK_XBUTTON2) = true;
 					_D("x2_");
 					kmMacro(VK_XBUTTON2);
 				}
@@ -311,14 +337,14 @@ LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
 			int ind = GET_XBUTTON_WPARAM(mStruct->mouseData);
 
 			if (ind == 1) {
-				if (O(VK_XBUTTON1)) {
-					O(VK_XBUTTON1) = false;
+				if (keyDown(VK_XBUTTON1)) {
+					keyDown(VK_XBUTTON1) = false;
 					_D("x1^");
 				}
 			}
 			else if (ind == 2) {
-				if (O(VK_XBUTTON2)) {
-					O(VK_XBUTTON2) = false;
+				if (keyDown(VK_XBUTTON2)) {
+					keyDown(VK_XBUTTON2) = false;
 					_D("x2^");
 				}
 			}
@@ -334,16 +360,16 @@ LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
 		//	break;
 		//}
 		case WM_MBUTTONDOWN: {
-			if (!O(VK_MBUTTON)) {
-				O(VK_MBUTTON) = true;
+			if (!keyDown(VK_MBUTTON)) {
+				keyDown(VK_MBUTTON) = true;
 				_D("Middle_");
 				kmMacro(VK_MBUTTON);
 			}
 			break;
 		}
 		case WM_MBUTTONUP: {
-			if (O(VK_MBUTTON)) {
-				O(VK_MBUTTON) = false;
+			if (keyDown(VK_MBUTTON)) {
+				keyDown(VK_MBUTTON) = false;
 				_D("Middle^");
 			}
 			break;
@@ -356,5 +382,5 @@ LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam) {
 		}
 		}
 	}
-	return CallNextHookEx(pHandler->moHook, nCode, wParam, lParam);
+	return CallNextHookEx(handler->moHook, nCode, wParam, lParam);
 }
