@@ -1,4 +1,4 @@
-#include "MyForm.h"
+#include "App.h"
 #include "debug.h"
 
 #include <library.h>
@@ -57,7 +57,7 @@ void Main(array<String^>^ args)
 	//	reads, writes and creates configfile
 	config = new Config();
 	//	initialize the Application UI
-	auto form = gcnew EscoCp::MyForm();
+	auto form = gcnew EscoCp::App();
 
 	//	set handler and config to make a "pipe"
 	form->setConfig(config);

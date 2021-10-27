@@ -180,7 +180,7 @@ void Config::create() {
     k["window"]["y"] = 100;
     k["vanishkey"] = -1;
 
-    std::vector<Profile*>* testprofiles;
+    auto testprofiles = new std::vector<Profile*>();
     testprofiles->push_back(new Profile());
 
     auto profile = testprofiles->at(0);
