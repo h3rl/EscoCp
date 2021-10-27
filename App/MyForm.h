@@ -11,11 +11,6 @@
 #include <chrono>
 #include <thread>
 
-namespace MetroFramework {
-	namespace Forms {
-		typedef class MetroForm;
-	}
-}
 
 namespace EscoCp {
 
