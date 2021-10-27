@@ -65,7 +65,10 @@
     <ClInclude Include="input.h">
       <Filter>Application\Forms\Input</Filter>
     </ClInclude>
-    <ClInclude Include="form.h">
+    <ClInclude Include="resource.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="MyForm.h">
       <Filter>Application</Filter>
     </ClInclude>
   </ItemGroup>
