@@ -46,7 +46,6 @@ void Main(array<String^>^ args)
 	Application::SetCompatibleTextRenderingDefault(false);
 
 	handler = new Handler();
-
 	config = new Config();
 	auto form = gcnew EscoCp::MyForm();
 	form->setConfig(config);
@@ -67,45 +66,45 @@ void Main(array<String^>^ args)
 
 struct GlobalVariables
 {
-	bool recoil = false;
+	bool start = false;
+	bool stop = false;
 	int force = 0;
 	int delay = 1;
 } globals, locals;
 
 void updateThread()
 {
-	bool g_doRecoil = false;
-	int g_force;
-	int g_delay;
 	for (;;)
 	{
-		if (GetAsyncKeyState(VK_KEY_P))
-		{
-			ExitProcess(0);
-		}
-		bool l_doRecoil = true;
+		locals.stop = false;
+		locals.start = true;
 		if (!handler->mouse->at(VK_LBUTTON) ||
 			!handler->mouse->at(VK_RBUTTON) ||
 			slot == NOSLOT ||
 			handler->profiles->at(slot) == nullptr) {
-			l_doRecoil = false;
+			locals.start = false;
+		}
+		if (!handler->mouse->at(VK_LBUTTON))
+		{
+			locals.stop = true;
 		}
 
 		if (config->tabbedIn) {
 			char string[32];
 			GetWindowTextA(GetForegroundWindow(), string, sizeof(string));
-			bool isInPubg = std::strstr(string, "TLEGR") != NULL;
-			if (!isInPubg)
-				l_doRecoil = false;
+			bool isIngame = std::strstr(string, "TLEGR") != NULL;
+			if (!isIngame) {
+				locals.start = false;
+				locals.stop = true;
+			}
 		}
-		if (l_doRecoil) {
+		if (locals.start) {
 			Profile* profile = handler->profiles->at(slot);
-			g_force = max(profile->recoil->at(stance), 0);
-			g_delay = max(profile->delay->at(stance), 1);
+			globals.force = max(profile->recoil->at(stance), 0);
+			globals.delay = max(profile->delay->at(stance), 1);
 		}
-
-
-		g_doRecoil = l_doRecoil;
+		globals.stop = locals.stop;
+		globals.start = locals.start;
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 	return;
@@ -117,15 +116,12 @@ void recoilThread()
 	_S("recoil thread started");
 	for (;;)
 	{
-		if (handler->ingame && handler->mouse->at(VK_LBUTTON) && handler->mouse->at(VK_RBUTTON) && slot != NOSLOT && handler->profiles->at(slot) != nullptr)
+		if (globals.start)
 		{
-			int force, delay;
 			do {
-				force = max(handler->profiles->at(slot)->recoil->at(stance), 0);
-				delay = max(handler->profiles->at(slot)->delay->at(stance), 1);
-				input::move(0, force);
-				std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-			} while (handler->mouse->at(VK_LBUTTON) && slot != NOSLOT && handler->profiles->at(slot) != nullptr);
+				input::move(0, globals.force);
+				std::this_thread::sleep_for(std::chrono::milliseconds(globals.delay));
+			} while (!globals.stop);
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
@@ -163,7 +159,7 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					Profile* profile = config->profileList->at(i);
 					if (profile->onkey == key && slot != NOSLOT ) {
 						handler->profiles->at(slot) = config->profileList->at(i);
-						_D("SET " << profile->name << " to slot " << slot);
+						_D("SET " << profile->name << " to slot " << stringifySlot(slot));
 					}
 				}
 				if (key == config->vanishkey) {
