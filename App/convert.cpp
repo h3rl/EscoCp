@@ -158,10 +158,27 @@ std::string vkToString(int vk) {
     return std::string(c);
 }
 
-const bool letters = false;
+
+const char* stringifySlot(Slot slot)
+{
+    switch (slot)
+    {
+    case Slot::NOSLOT: {
+        return "none";
+    }
+    case Slot::SLOT1: {
+        return "1";
+    }
+    case Slot::SLOT2: {
+        return "2";
+    }
+    }
+    return "";
+}
 
 const char* stringifyStance(Stance stance)
 {
+    const bool letters = false;
     if (letters) {
         switch (stance)
         {

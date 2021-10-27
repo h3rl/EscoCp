@@ -10,3 +10,4 @@ const char* sysToCstr(System::String^ txt);
 std::string vkToString(int vk);
 
 const char* stringifyStance(Stance stance);
+const char* stringifySlot(Slot slot);
