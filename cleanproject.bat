@@ -1,5 +1,6 @@
 @echo off
 
+call :rxdir ".vs"
 call :rxdir "bin"
 call :rxfdir "App"
 call :rxfdir "Console"
