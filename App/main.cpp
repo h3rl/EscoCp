@@ -26,14 +26,19 @@ void recoilThread(); void updateThread();
 
 void Main(array<String^>^ args)
 {
+	//	creates a debug console if _DEBUG, enables _D, _S, _M etc for outputmessages
 	createDbgConsole();
 
+	//	get HWID from Library.dll
 	const char* computerHWID = getIdentifier();
+
+	//	for now check if it is my computer
 	if (
 		!__strcmp("b71acd838bac692a9640f0ed793f7441", computerHWID) &&	//desktop
 		!__strcmp("5ad528ce2d9b88d3396cbfea97ef5029", computerHWID)		//laptop
 		)
 	{
+		//	if debug throw the users hwid
 #ifdef _DEBUG
 		_D("hwid missmatch");
 		_D(computerHWID);
@@ -42,21 +47,35 @@ void Main(array<String^>^ args)
 		return;
 	}
 
+	//	default VS form stuff
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
+	//	handles inputs and states
 	handler = new Handler();
+
+	//	reads, writes and creates configfile
 	config = new Config();
+	//	initialize the Application UI
 	auto form = gcnew EscoCp::MyForm();
+
+	//	set handler and config to make a "pipe"
 	form->setConfig(config);
 	form->setHandler(handler);
+
+	//	save the apps UI window handle so we can use it later
 	hwnd = form->getHwnd();
+
+	//	now start threads for recoil, input and/or state changes
 	hRecoil = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)recoilThread, 0, 0, 0);
 	hUpdate = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)updateThread, 0, 0, 0);
+	//	threads created?
 	if (hRecoil && hUpdate) {
+		//	set higher priority for faster.
 		SetThreadPriority(hRecoil, THREAD_PRIORITY_ABOVE_NORMAL);
 	}
 	else {
+		//	threads creating failed, throw err.
 		String^ err = "Failed to create threads\ncode: " + GetLastError();
 		MessageBoxA(NULL,sysToCstr(err), "error", MB_OK);
 		return;
@@ -64,6 +83,7 @@ void Main(array<String^>^ args)
 	System::Windows::Forms::Application::Run(form);
 }
 
+//	Struct that saves recoil-used vars
 struct GlobalVariables
 {
 	bool start = false;
@@ -98,10 +118,23 @@ void updateThread()
 				locals.stop = true;
 			}
 		}
-		if (locals.start) {
-			Profile* profile = handler->profiles->at(slot);
-			globals.force = max(profile->recoil->at(stance), 0);
-			globals.delay = max(profile->delay->at(stance), 1);
+		if (slot != NOSLOT && handler->profiles->at(slot))
+		{
+			//	fails if spamming
+			try {
+				Profile* profile = handler->profiles->at(slot);
+				locals.force = profile->recoil->at(stance);
+				locals.delay = profile->delay->at(stance);
+
+				globals.force = max(locals.force, 0);
+				globals.delay = max(locals.delay, 1);
+			}
+			//	do nothing
+			catch (...) { }
+		}
+		if (globals.force == 0) {
+			locals.start = false;
+			locals.stop = true;
 		}
 		globals.stop = locals.stop;
 		globals.start = locals.start;
