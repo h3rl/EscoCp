@@ -1,5 +1,4 @@
 #include "handler.h"
-#include "form.h"
 
 Handler::Handler() {
 	ingame = false;
