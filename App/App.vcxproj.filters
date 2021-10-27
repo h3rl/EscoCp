@@ -68,7 +68,7 @@
     <ClInclude Include="resource.h">
       <Filter>Application</Filter>
     </ClInclude>
-    <ClInclude Include="MyForm.h">
+    <ClInclude Include="App.h">
       <Filter>Application</Filter>
     </ClInclude>
   </ItemGroup>
