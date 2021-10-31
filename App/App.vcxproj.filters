@@ -28,6 +28,9 @@
     <Filter Include="Application\Resources">
       <UniqueIdentifier>{b633601d-9a2a-4246-b424-1cc0fbfa161e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Application\Antidbg">
+      <UniqueIdentifier>{89609228-a6b9-41f2-b724-efc4089ccd24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="config.cpp">
@@ -47,6 +50,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="antidbg\AntiDBG.cpp">
+      <Filter>Application\Antidbg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +80,9 @@
     <ClInclude Include="resource.h">
       <Filter>Application\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="antidbg\antidbg.h">
+      <Filter>Application\Antidbg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="App.rc">
@@ -84,5 +93,8 @@
     <Image Include="..\Global Dependencies\icon.ico">
       <Filter>Application\Resources</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="antidbg\AntiDBG.asm" />
   </ItemGroup>
 </Project>
