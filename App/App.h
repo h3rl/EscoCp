@@ -745,7 +745,7 @@ namespace EscoCp {
 		//_D("Selected index: " << SelectedIndex);
 		if (SelectedIndex >= 0) {
 
-			currentProfile = cfg->profileList->at(SelectedIndex);//  [SelectedIndex];
+			currentProfile = cfg->profileList->at(SelectedIndex);
 
 			inpDelayStanding->Value = currentProfile->delay->at(0);
 			inpDelayCrouch->Value = currentProfile->delay->at(1);
@@ -776,14 +776,12 @@ namespace EscoCp {
 		}
 	}
 	private: System::Void btnRestore_Click(System::Object^ sender, System::EventArgs^ e) {
+		int oldselected = listProfiles->SelectedIndex;
 		if (cfg->read()) {
 			writeMessage("Config read");
 		}
-		else {
-			writeMessage("unable to read cfg, check for typos or delete file", true);
-		}
 		loadProfilesFromCfg();
-		listProfiles->SelectedIndex = -1;
+		listProfiles->SelectedIndex = oldselected;
 	}
 	private: System::Void chkOntop_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		cfg->onTop = chkOntop->Checked;

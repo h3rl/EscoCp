@@ -25,6 +25,9 @@
     <Filter Include="Application\Forms\Input">
       <UniqueIdentifier>{fc1fed7b-fe72-4cf3-a271-f647a53ded76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Application\Resources">
+      <UniqueIdentifier>{b633601d-9a2a-4246-b424-1cc0fbfa161e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="config.cpp">
@@ -65,11 +68,21 @@
     <ClInclude Include="input.h">
       <Filter>Application\Forms\Input</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Application</Filter>
-    </ClInclude>
     <ClInclude Include="App.h">
       <Filter>Application</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Application\Resources</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="App.rc">
+      <Filter>Application\Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Global Dependencies\icon.ico">
+      <Filter>Application\Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>
