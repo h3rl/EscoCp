@@ -57,4 +57,17 @@ int main()
             _M(ex.what());
         };
     }
+    for (;;)
+    {
+        int force = 9;
+        int delay = 4;
+        if (GetAsyncKeyState(VK_NUMPAD0))
+        {
+            do {
+                input::move(0, force);
+                std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+            } while (GetAsyncKeyState(VK_NUMPAD0));
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
