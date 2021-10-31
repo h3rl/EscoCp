@@ -14,11 +14,16 @@ using namespace System::Threading;
 HWND hwnd;
 Handler* handler = nullptr;
 Config* config = nullptr;
-HANDLE hRecoil, hUpdate;
+HANDLE hRecoil;
+HANDLE hUpdate;
 
-void recoilThread(); void updateThread();
+void recoilThread();
+void updateThread();
+
+static const int smooth = 5;
 
 #define __strcmp(a,b) (bool)(strcmp(a,b) == 0)
+#define __slp(x) std::this_thread::sleep_for(std::chrono::milliseconds(x));
 
 #define slot handler->slot
 #define lastslot handler->lastSlot
@@ -83,30 +88,37 @@ void Main(array<String^>^ args)
 	System::Windows::Forms::Application::Run(form);
 }
 
+struct DelayStruct
+{
+	int delta = 0;
+	int extra = 0;
+	int total = 0;
+};
+
 //	Struct that saves recoil-used vars
 struct GlobalVariables
 {
 	bool start = false;
 	bool stop = false;
 	int force = 0;
-	int delay = 1;
-} globals, locals;
+	int delay = 0;
+} globals;
 
 void updateThread()
 {
 	for (;;)
 	{
-		locals.stop = false;
-		locals.start = true;
+		bool stop = false;
+		bool start = true;
 		if (!handler->mouse->at(VK_LBUTTON) ||
 			!handler->mouse->at(VK_RBUTTON) ||
 			slot == NOSLOT ||
 			handler->profiles->at(slot) == nullptr) {
-			locals.start = false;
+			start = false;
 		}
 		if (!handler->mouse->at(VK_LBUTTON))
 		{
-			locals.stop = true;
+			stop = true;
 		}
 
 		if (config->tabbedIn) {
@@ -114,34 +126,53 @@ void updateThread()
 			GetWindowTextA(GetForegroundWindow(), string, sizeof(string));
 			bool isIngame = std::strstr(string, "TLEGR") != NULL;
 			if (!isIngame) {
-				locals.start = false;
-				locals.stop = true;
+				start = false;
+				stop = true;
 			}
 		}
 		if (slot != NOSLOT && handler->profiles->at(slot))
 		{
 			//	fails if spamming
 			try {
-				Profile* profile = handler->profiles->at(slot);
-				locals.force = profile->recoil->at(stance);
-				locals.delay = profile->delay->at(stance);
+				int force = handler->profiles->at(slot)->recoil->at(stance);
+				int total = handler->profiles->at(slot)->delay->at(stance);
 
-				globals.force = max(locals.force, 0);
-				globals.delay = max(locals.delay, 1);
+				globals.force = max(force, 0);
+				globals.delay = max(total, 1);
 			}
 			//	do nothing
 			catch (...) { }
 		}
 		if (globals.force == 0) {
-			locals.start = false;
-			locals.stop = true;
+			start = false;
+			stop = true;
 		}
-		globals.stop = locals.stop;
-		globals.start = locals.start;
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		globals.stop = stop;
+		globals.start = start;
+		__slp(50);
 	}
 	return;
 }
+
+//void jrecoilThread()
+//{
+//	while (true) {
+//		if (globals.start)
+//		{
+//			for (int i = 0; i < smooth; i++)
+//			{
+//				input::move(0, globals.force);
+//				if (globals.delay.extra <= i) {
+//					__slp(globals.delay.delta + 1)
+//				}
+//				else {
+//					__slp(globals.delay.delta)
+//				}
+//				if (globals.stop) break;
+//			}
+//		}
+//	}
+//}
 
 
 void recoilThread()
@@ -153,10 +184,10 @@ void recoilThread()
 		{
 			do {
 				input::move(0, globals.force);
-				std::this_thread::sleep_for(std::chrono::milliseconds(globals.delay));
+				__slp(globals.delay);
 			} while (!globals.stop);
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		__slp(10);
 	}
 	return;
 }
