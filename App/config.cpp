@@ -16,7 +16,7 @@ using namespace System::Data;
 using namespace System::Threading;
 using namespace System::Drawing;
 
-#define CFGNAME "EscoCp.cfg"
+#define CFGNAME "config.cfg"
 
 Profile::Profile() {
     this->name = "";
@@ -109,6 +109,9 @@ bool Config::read() {
                     int val = jprofile->at("recoil").at(r).get<int>();
                     profile->recoil->push_back(val);
                 }
+                if (profile->recoil->size() != 3) {
+                    throw std::exception("size is supposed to be 3");
+                }
 
                 lastread = "profiles/" + std::to_string(i) + "/delay";
                 if (!jprofile->contains("delay"))
@@ -123,6 +126,10 @@ bool Config::read() {
                     profile->delay->push_back(val);
                 }
 
+                if (profile->delay->size() != 3) {
+                    throw std::exception("size is supposed to be 3");
+                }
+
                 profileList->push_back(profile);
             }
 
@@ -133,7 +140,7 @@ bool Config::read() {
             //  got some error while parsing json,
             //  now we give some feedback about where the error occured.
             _E(e.what());
-            String^ message = String(lastread.c_str()).ToString() + " is undefined\ndefine it or delete config to make a new one\n\n"+ String(e.what()).ToString();
+            String^ message = String(lastread.c_str()).ToString() + " is undefined\ndefine it or delete config to make a new one\n\n" + String(e.what()).ToString();
             String^ caption("Parsing Config FAILED");
 
             MessageBox::Show(message, caption, MessageBoxButtons::OK, MessageBoxIcon::Error);
@@ -181,27 +188,26 @@ void Config::create() {
     k["vanishkey"] = -1;
 
     auto testprofiles = new std::vector<Profile*>();
-    testprofiles->push_back(new Profile());
-
-    auto profile = testprofiles->at(0);
+    Profile* profile = new Profile();
     profile->name = "Passive";
     profile->onkey = 117;
-    profile->recoil = &std::vector<int>{ 0, 0, 0 };
-    profile->delay = &std::vector<int>{ 5, 5, 5 };
+    profile->recoil = new std::vector<int>{ 0, 0, 0 };
+    profile->delay = new std::vector<int>{ 5, 5, 5 };
+    testprofiles->push_back(profile);
 
-    testprofiles->push_back(new Profile());
-    profile = testprofiles->at(1);
+    profile = new Profile();
     profile->name = "Light";
     profile->onkey = 118;
-    profile->recoil = &std::vector<int>{ 5, 4, 3 };
-    profile->delay = &std::vector<int>{ 5, 5, 5 };
+    profile->recoil = new std::vector<int>{ 5, 4, 3 };
+    profile->delay = new std::vector<int>{ 5, 5, 5 };
+    testprofiles->push_back(profile);
 
-    testprofiles->push_back(new Profile());
-    profile = testprofiles->at(2);
+    profile = new Profile();
     profile->name = "Heavy";
     profile->onkey = 119;
-    profile->recoil = &std::vector<int>{ 11, 9, 7 };
-    profile->delay = &std::vector<int>{ 4, 4, 4 };
+    profile->recoil = new std::vector<int>{ 11, 9, 7 };
+    profile->delay = new std::vector<int>{ 4, 4, 4 };
+    testprofiles->push_back(profile);
 
     for (size_t i = 0; i < testprofiles->size(); i++) {
         k["profiles"].push_back(json::object());
