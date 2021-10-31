@@ -14,6 +14,9 @@
     <Filter Include="Source Files\hwid">
       <UniqueIdentifier>{d6110315-029f-4237-b02e-72cf44c1e0bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\convert">
+      <UniqueIdentifier>{f9413ab4-7dea-409f-8fea-d4614bbb549a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="md5.h">
@@ -27,6 +30,9 @@
     </ClInclude>
     <ClInclude Include="..\Global Dependencies\librarydefs.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="convert.h">
+      <Filter>Source Files\convert</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +50,9 @@
     </ClCompile>
     <ClCompile Include="hwid.cpp">
       <Filter>Source Files\hwid</Filter>
+    </ClCompile>
+    <ClCompile Include="convert.cpp">
+      <Filter>Source Files\convert</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

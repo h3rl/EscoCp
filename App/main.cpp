@@ -1,5 +1,7 @@
+#pragma warning( disable : 4005 )
 #include "App.h"
 #include "debug.h"
+#include "antidbg/antidbg.h"
 
 #include <library.h>
 
@@ -33,6 +35,50 @@ void Main(array<String^>^ args)
 {
 	//	creates a debug console if _DEBUG, enables _D, _S, _M etc for outputmessages
 	createDbgConsole();
+
+#ifndef _DEBUG
+
+	// -------------------------------------------------------------------
+	// -- Memory Checks --------------------------------------------------
+	// -------------------------------------------------------------------
+	adbg_IsDebuggerPresent();
+	adbg_BeingDebuggedPEB();
+	adbg_NtGlobalFlagPEB();
+	adbg_CheckRemoteDebuggerPresent();
+	adbg_NtQueryInformationProcess();
+	adbg_CheckWindowClassName();
+	adbg_CheckWindowName();
+	adbg_ProcessFileName();
+	adbg_NtSetInformationThread();
+	//adbg_DebugActiveProcess(sysToCstr(args[1]));
+
+	// -------------------------------------------------------------------
+	// -- CPU Checks -----------------------------------------------------
+	// -------------------------------------------------------------------
+	adbg_HardwareDebugRegisters();
+	adbg_MovSS();
+
+	// -------------------------------------------------------------------
+	// -- Timing Checks --------------------------------------------------
+	// -------------------------------------------------------------------
+	adbg_RDTSC();
+	adbg_QueryPerformanceCounter();
+	adbg_GetTickCount();
+
+	// -------------------------------------------------------------------
+	// -- Exception Checks -----------------------------------------------
+	// -------------------------------------------------------------------
+	adbg_CloseHandleException();
+	adbg_SingleStepException();
+	adbg_Int3();
+	adbg_Int2D();
+	adbg_PrefixHop();
+
+	// -------------------------------------------------------------------
+	// -- Other ----------------------------------------------------------
+	// -------------------------------------------------------------------
+	adbg_CrashOllyDbg();
+#endif
 
 	//	get HWID from Library.dll
 	const char* computerHWID = getIdentifier();
