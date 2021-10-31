@@ -23,51 +23,26 @@ namespace input {
 	}
 }
 
-#define slp(x) std::this_thread::sleep_for(std::chrono::milliseconds(x));
+#define __slp(x) std::this_thread::sleep_for(std::chrono::milliseconds(x));
 
 int main()
 {
-    int time = 10;
-    int force = 5;
-
+    int times = 7;
+    int delay = 4;
+    int force = 1;
     const int smooth = 5;
-
-    while (true)
-    {
-        try {
-            int extra = time % smooth;
-            int deltatime = (time - extra) / smooth;
-            while(GetAsyncKeyState(VK_KEY_L)) {
-                for (int i = 0; i < smooth; i++)
-                {
-                    input::move(0, force);
-                    if (extra <= i) {
-                        slp(deltatime+1)
-                    }
-                    else {
-                        slp(deltatime)
-                    }
-                    
-                    if (!GetAsyncKeyState(VK_KEY_L)) break;
-                }
-            }
-            if (GetAsyncKeyState(VK_KEY_K)) break;
-        }
-        catch(std::exception ex) {
-            _M(ex.what());
-        };
-    }
     for (;;)
     {
-        int force = 9;
-        int delay = 4;
-        if (GetAsyncKeyState(VK_NUMPAD0))
+        if (GetAsyncKeyState(VK_KEY_K))
         {
             do {
-                input::move(0, force);
-                std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-            } while (GetAsyncKeyState(VK_NUMPAD0));
+                for (size_t i = 0; i < times; i++) {
+                    input::move(0, force);
+                    if (!GetAsyncKeyState(VK_KEY_K)) break;
+                }
+                __slp(delay);
+            } while (GetAsyncKeyState(VK_KEY_K));
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        __slp(10);
     }
 }

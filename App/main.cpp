@@ -22,8 +22,6 @@ HANDLE hUpdate;
 void recoilThread();
 void updateThread();
 
-static const int smooth = 5;
-
 #define __strcmp(a,b) (bool)(strcmp(a,b) == 0)
 #define __slp(x) std::this_thread::sleep_for(std::chrono::milliseconds(x));
 
@@ -69,9 +67,10 @@ void Main(array<String^>^ args)
 	// -- Exception Checks -----------------------------------------------
 	// -------------------------------------------------------------------
 	adbg_CloseHandleException();
-	adbg_SingleStepException();
-	adbg_Int3();
-	adbg_Int2D();
+	//	these 3 cause exit without debugger present.
+	//adbg_SingleStepException();
+	//adbg_Int3();
+	//adbg_Int2D();
 	adbg_PrefixHop();
 
 	// -------------------------------------------------------------------
