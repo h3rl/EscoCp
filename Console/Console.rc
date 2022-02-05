@@ -44,6 +44,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
+MAINICON ICON "..\\Global Dependencies\\icon.ico"
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
