@@ -84,7 +84,7 @@ void Main(array<String^>^ args)
 
 	//	for now check if it is my computer
 	if (
-		!__strcmp("b71acd838bac692a9640f0ed793f7441", computerHWID) &&	//desktop
+		!__strcmp("ec7d9851e90f6e10c6298e620239db5d", computerHWID) &&	//desktop
 		!__strcmp("5ad528ce2d9b88d3396cbfea97ef5029", computerHWID)		//laptop
 		)
 	{
@@ -194,30 +194,10 @@ void updateThread()
 		}
 		globals.stop = stop;
 		globals.start = start;
-		__slp(50);
+		__slp(10);
 	}
 	return;
 }
-
-//void jrecoilThread()
-//{
-//	while (true) {
-//		if (globals.start)
-//		{
-//			for (int i = 0; i < smooth; i++)
-//			{
-//				input::move(0, globals.force);
-//				if (globals.delay.extra <= i) {
-//					__slp(globals.delay.delta + 1)
-//				}
-//				else {
-//					__slp(globals.delay.delta)
-//				}
-//				if (globals.stop) break;
-//			}
-//		}
-//	}
-//}
 
 
 void recoilThread()
@@ -236,6 +216,7 @@ void recoilThread()
 	}
 	return;
 }
+
 
 LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 	if (handler == NULL) {
