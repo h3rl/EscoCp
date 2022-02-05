@@ -27,6 +27,9 @@
     <ClCompile Include="mouseoptimization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="crackmes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Global Dependencies\debug.h">
