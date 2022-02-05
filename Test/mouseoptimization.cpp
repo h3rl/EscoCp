@@ -1,4 +1,5 @@
 #include "debug.h"
+#include "util.h"
 
 #include <Windows.h>
 #include <iostream>
@@ -17,30 +18,31 @@ using namespace std;
 #include <thread>
 
 namespace input {
-	void move(short x, short y) {
+	void move(int x, int y) {
 		mouse_event(MOUSEEVENTF_MOVE, x, y, NULL, NULL);
 	}
 }
 
+#define __slp(x) std::this_thread::sleep_for(std::chrono::milliseconds(x));
+
 int main()
 {
-    static int smooth = 10;
-    static int force = 2;
-    static int time = 4;
-
-    while (true)
+    int times = 7;
+    int delay = 4;
+    int force = 1;
+    const int smooth = 5;
+    for (;;)
     {
-        try {
-            if (GetAsyncKeyState(VK_LBUTTON) && GetAsyncKeyState(VK_RBUTTON))
-            {
-                do {
-                    input::move(0, 4);
-                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-                } while (GetAsyncKeyState(VK_LBUTTON) && GetAsyncKeyState(VK_RBUTTON));
-            }
+        if (GetAsyncKeyState(VK_KEY_K))
+        {
+            do {
+                for (size_t i = 0; i < times; i++) {
+                    input::move(0, force);
+                    if (!GetAsyncKeyState(VK_KEY_K)) break;
+                }
+                __slp(delay);
+            } while (GetAsyncKeyState(VK_KEY_K));
         }
-        catch(std::exception ex) {
-            _M(ex.what());
-        };
+        __slp(10);
     }
 }

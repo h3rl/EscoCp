@@ -6,7 +6,7 @@
  **/
 
 #include <algorithm>
-
+#include "convert.h"
 #include "wmiresult.hpp"
 
 using std::string;
@@ -42,7 +42,8 @@ bool WmiResult::extract(std::size_t index, const string &name, string &out) cons
 	wstring temp;
 	if(!extract(index, name, temp))return false;
 
-	out = string(temp.cbegin(), temp.cend());
+	out = ws2s(temp);
+	//out = string(temp.cbegin(), temp.cend());
 	return true;
 }
 

@@ -20,13 +20,13 @@ LRESULT CALLBACK moProc(int nCode, WPARAM wParam, LPARAM lParam);
 class Handler
 {
 public:
-	std::vector<Profile*> profiles = { nullptr,nullptr };
+	std::vector<Profile*>* profiles = new std::vector<Profile*> { nullptr,nullptr };
 
 	HHOOK kbHook;
 	HHOOK moHook;
 	HANDLE htMessage;
-	std::map<DWORD, bool>* kbKeys = new std::map<DWORD, bool>;
-	std::map<DWORD, bool>* moKeys = new std::map<DWORD, bool>{
+	std::map<DWORD, bool>* keyboard = new std::map<DWORD, bool>;
+	std::map<DWORD, bool>* mouse = new std::map<DWORD, bool>{
 		{ VK_MBUTTON,false },
 		{ VK_LBUTTON,false },
 		{ VK_RBUTTON,false },

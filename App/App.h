@@ -11,11 +11,6 @@
 #include <chrono>
 #include <thread>
 
-namespace MetroFramework {
-	namespace Forms {
-		typedef class MetroForm;
-	}
-}
 
 namespace EscoCp {
 
@@ -28,9 +23,9 @@ namespace EscoCp {
 	using namespace System::Drawing;
 
 	/// <summary>
-	/// Summary for MyForm
+	/// Summary for App
 	/// </summary>
-	public ref class MyForm : public System::Windows::Forms::Form
+	public ref class App : public System::Windows::Forms::Form
 	{
 	public:
 		HWND hWnd;
@@ -80,7 +75,7 @@ namespace EscoCp {
 		int SelectedIndex = -1;
 
 	public:
-		MyForm(void)
+		App(void)
 		{
 			this->InitializeComponent();
 			this->setTooltips();
@@ -91,7 +86,7 @@ namespace EscoCp {
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		~MyForm()
+		~App()
 		{
 			if (keys) {
 				delete keys;
@@ -164,7 +159,7 @@ namespace EscoCp {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
-			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(App::typeid));
 			this->btnAddProfile = (gcnew System::Windows::Forms::Label());
 			this->groupBox4 = (gcnew System::Windows::Forms::GroupBox());
 			this->btnRestore = (gcnew System::Windows::Forms::Button());
@@ -232,7 +227,7 @@ namespace EscoCp {
 			this->btnAddProfile->Size = System::Drawing::Size(87, 17);
 			this->btnAddProfile->TabIndex = 2;
 			this->btnAddProfile->Text = L"+ Add profile";
-			this->btnAddProfile->Click += gcnew System::EventHandler(this, &MyForm::btnAddProfile_Click);
+			this->btnAddProfile->Click += gcnew System::EventHandler(this, &App::btnAddProfile_Click);
 			// 
 			// groupBox4
 			// 
@@ -256,7 +251,7 @@ namespace EscoCp {
 			this->btnRestore->TabIndex = 24;
 			this->btnRestore->Text = L"Restore all";
 			this->btnRestore->UseVisualStyleBackColor = true;
-			this->btnRestore->Click += gcnew System::EventHandler(this, &MyForm::btnRestore_Click);
+			this->btnRestore->Click += gcnew System::EventHandler(this, &App::btnRestore_Click);
 			// 
 			// btnSave
 			// 
@@ -266,7 +261,7 @@ namespace EscoCp {
 			this->btnSave->TabIndex = 23;
 			this->btnSave->Text = L"Save all";
 			this->btnSave->UseVisualStyleBackColor = true;
-			this->btnSave->Click += gcnew System::EventHandler(this, &MyForm::btnSave_Click);
+			this->btnSave->Click += gcnew System::EventHandler(this, &App::btnSave_Click);
 			// 
 			// listProfiles
 			// 
@@ -281,9 +276,9 @@ namespace EscoCp {
 			this->listProfiles->Size = System::Drawing::Size(143, 189);
 			this->listProfiles->TabIndex = 1;
 			this->ttProfilelist->SetToolTip(this->listProfiles, L"Rightclick selected to delete");
-			this->listProfiles->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::listProfiles_SelectedIndexChanged);
-			this->listProfiles->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::listProfiles_MDown);
-			this->listProfiles->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::listProfiles_MUp);
+			this->listProfiles->SelectedIndexChanged += gcnew System::EventHandler(this, &App::listProfiles_SelectedIndexChanged);
+			this->listProfiles->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &App::listProfiles_MDown);
+			this->listProfiles->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &App::listProfiles_MUp);
 			// 
 			// hmenu
 			// 
@@ -301,7 +296,7 @@ namespace EscoCp {
 			this->hmenuExit->Name = L"hmenuExit";
 			this->hmenuExit->Size = System::Drawing::Size(103, 22);
 			this->hmenuExit->Text = L"Exit";
-			this->hmenuExit->Click += gcnew System::EventHandler(this, &MyForm::hmenuExit_Click);
+			this->hmenuExit->Click += gcnew System::EventHandler(this, &App::hmenuExit_Click);
 			// 
 			// hmenuShow
 			// 
@@ -310,7 +305,7 @@ namespace EscoCp {
 			this->hmenuShow->Name = L"hmenuShow";
 			this->hmenuShow->Size = System::Drawing::Size(103, 22);
 			this->hmenuShow->Text = L"Show";
-			this->hmenuShow->Click += gcnew System::EventHandler(this, &MyForm::hmenuShow_Click);
+			this->hmenuShow->Click += gcnew System::EventHandler(this, &App::hmenuShow_Click);
 			// 
 			// inpProfile
 			// 
@@ -319,7 +314,7 @@ namespace EscoCp {
 			this->inpProfile->Name = L"inpProfile";
 			this->inpProfile->Size = System::Drawing::Size(227, 20);
 			this->inpProfile->TabIndex = 16;
-			this->inpProfile->TextChanged += gcnew System::EventHandler(this, &MyForm::inpProfile_TextChanged);
+			this->inpProfile->TextChanged += gcnew System::EventHandler(this, &App::inpProfile_TextChanged);
 			// 
 			// groupBox1
 			// 
@@ -356,8 +351,8 @@ namespace EscoCp {
 			this->btnActivate->ReadOnly = true;
 			this->btnActivate->Size = System::Drawing::Size(227, 20);
 			this->btnActivate->TabIndex = 21;
-			this->btnActivate->Click += gcnew System::EventHandler(this, &MyForm::btnActivate_Click);
-			this->btnActivate->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::btnActivate_KeyDown);
+			this->btnActivate->Click += gcnew System::EventHandler(this, &App::btnActivate_Click);
+			this->btnActivate->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &App::btnActivate_KeyDown);
 			// 
 			// label7
 			// 
@@ -377,9 +372,9 @@ namespace EscoCp {
 			this->btnVanish->ReadOnly = true;
 			this->btnVanish->Size = System::Drawing::Size(92, 20);
 			this->btnVanish->TabIndex = 24;
-			this->btnVanish->Click += gcnew System::EventHandler(this, &MyForm::btnVanish_click);
-			this->btnVanish->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::btnVanish_KeyDown);
-			this->btnVanish->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::btnVanish_MDown);
+			this->btnVanish->Click += gcnew System::EventHandler(this, &App::btnVanish_click);
+			this->btnVanish->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &App::btnVanish_KeyDown);
+			this->btnVanish->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &App::btnVanish_MDown);
 			// 
 			// label5
 			// 
@@ -521,7 +516,7 @@ namespace EscoCp {
 			this->inpRecoilStanding->Name = L"inpRecoilStanding";
 			this->inpRecoilStanding->Size = System::Drawing::Size(90, 20);
 			this->inpRecoilStanding->TabIndex = 0;
-			this->inpRecoilStanding->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpRecoilStanding_ValueChanged);
+			this->inpRecoilStanding->ValueChanged += gcnew System::EventHandler(this, &App::inpRecoilStanding_ValueChanged);
 			// 
 			// inpDelayStanding
 			// 
@@ -531,7 +526,7 @@ namespace EscoCp {
 			this->inpDelayStanding->Name = L"inpDelayStanding";
 			this->inpDelayStanding->Size = System::Drawing::Size(90, 20);
 			this->inpDelayStanding->TabIndex = 1;
-			this->inpDelayStanding->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpDelayStanding_ValueChanged);
+			this->inpDelayStanding->ValueChanged += gcnew System::EventHandler(this, &App::inpDelayStanding_ValueChanged);
 			// 
 			// inpDelayCrouch
 			// 
@@ -541,7 +536,7 @@ namespace EscoCp {
 			this->inpDelayCrouch->Name = L"inpDelayCrouch";
 			this->inpDelayCrouch->Size = System::Drawing::Size(90, 20);
 			this->inpDelayCrouch->TabIndex = 2;
-			this->inpDelayCrouch->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpDelayCrouch_ValueChanged);
+			this->inpDelayCrouch->ValueChanged += gcnew System::EventHandler(this, &App::inpDelayCrouch_ValueChanged);
 			// 
 			// inpRecoilCrouch
 			// 
@@ -551,7 +546,7 @@ namespace EscoCp {
 			this->inpRecoilCrouch->Name = L"inpRecoilCrouch";
 			this->inpRecoilCrouch->Size = System::Drawing::Size(90, 20);
 			this->inpRecoilCrouch->TabIndex = 3;
-			this->inpRecoilCrouch->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpRecoilCrouch_ValueChanged);
+			this->inpRecoilCrouch->ValueChanged += gcnew System::EventHandler(this, &App::inpRecoilCrouch_ValueChanged);
 			// 
 			// inpRecoilProne
 			// 
@@ -561,7 +556,7 @@ namespace EscoCp {
 			this->inpRecoilProne->Name = L"inpRecoilProne";
 			this->inpRecoilProne->Size = System::Drawing::Size(90, 20);
 			this->inpRecoilProne->TabIndex = 5;
-			this->inpRecoilProne->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpRecoilProne_ValueChanged);
+			this->inpRecoilProne->ValueChanged += gcnew System::EventHandler(this, &App::inpRecoilProne_ValueChanged);
 			// 
 			// inpDelayProne
 			// 
@@ -571,7 +566,7 @@ namespace EscoCp {
 			this->inpDelayProne->Name = L"inpDelayProne";
 			this->inpDelayProne->Size = System::Drawing::Size(90, 20);
 			this->inpDelayProne->TabIndex = 4;
-			this->inpDelayProne->ValueChanged += gcnew System::EventHandler(this, &MyForm::inpDelayProne_ValueChanged);
+			this->inpDelayProne->ValueChanged += gcnew System::EventHandler(this, &App::inpDelayProne_ValueChanged);
 			// 
 			// outMessage
 			// 
@@ -605,7 +600,7 @@ namespace EscoCp {
 			this->chkOntop->TabIndex = 19;
 			this->chkOntop->Text = L"On top";
 			this->chkOntop->UseVisualStyleBackColor = true;
-			this->chkOntop->CheckedChanged += gcnew System::EventHandler(this, &MyForm::chkOntop_CheckedChanged);
+			this->chkOntop->CheckedChanged += gcnew System::EventHandler(this, &App::chkOntop_CheckedChanged);
 			// 
 			// trayIcon
 			// 
@@ -613,7 +608,7 @@ namespace EscoCp {
 			this->trayIcon->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"trayIcon.Icon")));
 			this->trayIcon->Text = L"EscoCp";
 			this->trayIcon->Visible = true;
-			this->trayIcon->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::trayIcon_MouseClick);
+			this->trayIcon->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &App::trayIcon_MouseClick);
 			// 
 			// chkTabbedin
 			// 
@@ -626,9 +621,9 @@ namespace EscoCp {
 			this->chkTabbedin->TabIndex = 25;
 			this->chkTabbedin->Text = L"Tabbed in";
 			this->chkTabbedin->UseVisualStyleBackColor = true;
-			this->chkTabbedin->CheckedChanged += gcnew System::EventHandler(this, &MyForm::chkTabbedin_CheckedChanged);
+			this->chkTabbedin->CheckedChanged += gcnew System::EventHandler(this, &App::chkTabbedin_CheckedChanged);
 			// 
-			// MyForm
+			// App
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
@@ -646,7 +641,7 @@ namespace EscoCp {
 			this->MaximizeBox = false;
 			this->MaximumSize = System::Drawing::Size(520, 327);
 			this->MinimumSize = System::Drawing::Size(520, 327);
-			this->Name = L"MyForm";
+			this->Name = L"App";
 			this->Text = L"EscoCp";
 			this->TopMost = true;
 			this->groupBox4->ResumeLayout(false);
@@ -715,9 +710,9 @@ namespace EscoCp {
 		  // set names based on what profiles are in cfg
 	public: void loadProfilesFromCfg() {
 		listProfiles->Items->Clear();
-		for (size_t i = 0; i < cfg->profileList.size(); i++)
+		for (size_t i = 0; i < cfg->profileList->size(); i++)
 		{
-			const char* profname = cfg->profileList[i].name.c_str();
+			const char* profname = cfg->profileList->at(i)->name.c_str();
 			System::String^ sprofname = System::String(profname).ToString();
 			listProfiles->Items->Add(sprofname);
 		}
@@ -740,9 +735,9 @@ namespace EscoCp {
 	}
 #pragma endregion
 	private: System::Void btnAddProfile_Click(System::Object^ sender, System::EventArgs^ e) {
-		Profile newProfile = Profile();
-		newProfile.name = "New Profile";
-		cfg->profileList.push_back(newProfile);
+		auto newProfile = new Profile();
+		newProfile->name = "New Profile";
+		cfg->profileList->push_back(newProfile);
 		loadProfilesFromCfg();
 	}
 	private: System::Void listProfiles_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
@@ -750,15 +745,15 @@ namespace EscoCp {
 		//_D("Selected index: " << SelectedIndex);
 		if (SelectedIndex >= 0) {
 
-			currentProfile = &cfg->profileList[SelectedIndex];
+			currentProfile = cfg->profileList->at(SelectedIndex);
 
-			inpDelayStanding->Value = currentProfile->delay[0];
-			inpDelayCrouch->Value = currentProfile->delay[1];
-			inpDelayProne->Value = currentProfile->delay[2];
+			inpDelayStanding->Value = currentProfile->delay->at(0);
+			inpDelayCrouch->Value = currentProfile->delay->at(1);
+			inpDelayProne->Value = currentProfile->delay->at(2);
 
-			inpRecoilStanding->Value = currentProfile->recoil[0];
-			inpRecoilCrouch->Value = currentProfile->recoil[1];
-			inpRecoilProne->Value = currentProfile->recoil[2];
+			inpRecoilStanding->Value = currentProfile->recoil->at(0);
+			inpRecoilCrouch->Value = currentProfile->recoil->at(1);
+			inpRecoilProne->Value = currentProfile->recoil->at(2);
 
 			btnActivate->Text = getOnKeyString();
 			btnVanish->Text = getVanishKeyString();
@@ -781,14 +776,12 @@ namespace EscoCp {
 		}
 	}
 	private: System::Void btnRestore_Click(System::Object^ sender, System::EventArgs^ e) {
+		int oldselected = listProfiles->SelectedIndex;
 		if (cfg->read()) {
 			writeMessage("Config read");
 		}
-		else {
-			writeMessage("unable to read cfg, check for typos or delete file", true);
-		}
 		loadProfilesFromCfg();
-		listProfiles->SelectedIndex = -1;
+		listProfiles->SelectedIndex = oldselected;
 	}
 	private: System::Void chkOntop_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		cfg->onTop = chkOntop->Checked;
@@ -906,11 +899,11 @@ namespace EscoCp {
 
 			if (newindex == -1)
 			{
-				newindex = (int)cfg->profileList.size() - 1;
+				newindex = (int)cfg->profileList->size() - 1;
 			}
 			//_D("newindex" << newindex);
 
-			std::swap(cfg->profileList.at(moveitem), cfg->profileList.at(newindex));
+			std::swap(cfg->profileList->at(moveitem), cfg->profileList->at(newindex));
 
 			//_D("from" << moveitem << "to" << newindex);
 
@@ -945,7 +938,7 @@ namespace EscoCp {
 				{
 					String^ cMessage = "profile " + profName->ToUpper() + " deleted";
 					writeMessage(cMessage);
-					cfg->profileList.erase(cfg->profileList.begin() + SelectedIndex);
+					cfg->profileList->erase(cfg->profileList->begin() + SelectedIndex);
 					loadProfilesFromCfg();
 					SelectedIndex = -1;
 					listProfiles->SelectedIndex = -1;
@@ -959,32 +952,32 @@ namespace EscoCp {
 	private: System::Void inpDelayStanding_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->delay.at(STANDING) = maxd(inpDelayStanding->Value, 1);
+		currentProfile->delay->at(STANDING) = maxd(inpDelayStanding->Value, 1);
 	}
 	private: System::Void inpDelayCrouch_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->delay.at(CROUCH) = maxd(inpDelayCrouch->Value, 1);
+		currentProfile->delay->at(CROUCH) = maxd(inpDelayCrouch->Value, 1);
 	}
 	private: System::Void inpDelayProne_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->delay.at(PRONE) = maxd(inpDelayProne->Value, 1);
+		currentProfile->delay->at(PRONE) = maxd(inpDelayProne->Value, 1);
 	}
 	private: System::Void inpRecoilStanding_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->recoil.at(STANDING) = maxd(inpRecoilStanding->Value, 0);
+		currentProfile->recoil->at(STANDING) = maxd(inpRecoilStanding->Value, 0);
 	}
 	private: System::Void inpRecoilCrouch_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->recoil.at(CROUCH) = maxd(inpRecoilCrouch->Value, 0);
+		currentProfile->recoil->at(CROUCH) = maxd(inpRecoilCrouch->Value, 0);
 	}
 	private: System::Void inpRecoilProne_ValueChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
 			return;
-		currentProfile->recoil.at(PRONE) = maxd(inpRecoilProne->Value, 0);
+		currentProfile->recoil->at(PRONE) = maxd(inpRecoilProne->Value, 0);
 	}
 	private: System::Void inpProfile_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 		if (currentProfile == NULL)
@@ -993,7 +986,7 @@ namespace EscoCp {
 		loadProfilesFromCfg();
 	}
 	private: System::Void hmenuExit_Click(System::Object^ sender, System::EventArgs^ e) {
-		this->~MyForm();
+		this->~App();
 	}
 	private: System::Void hmenuShow_Click(System::Object^ sender, System::EventArgs^ e) {
 		updateVisibility(true);
@@ -1006,5 +999,5 @@ namespace EscoCp {
 	private: System::Void chkTabbedin_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		cfg->tabbedIn = chkTabbedin->Checked;
 	}
-};
+	};
 }

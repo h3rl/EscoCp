@@ -22,11 +22,26 @@ namespace input {
 			dt = st;
 		}
 	}
+
+	void SetMousePos(int x, int y) {
+		mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, x, y, NULL, NULL);
+		//maxmin 0 and 65,535
+
+	}
+
 	void click(short delay) {
-		mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, NULL, NULL);
+		MouseButtonLDown();
 		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+		MouseButtonLUp();
+	}
+
+	void MouseButtonLDown() {
+		mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, NULL, NULL);
+	}
+	void MouseButtonLUp() {
 		mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, NULL, NULL);
 	}
+
 	void pressKey(int vkey, int delay) {
 		INPUT ip;
 		ip.type = INPUT_KEYBOARD;
