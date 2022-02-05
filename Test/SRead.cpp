@@ -244,16 +244,16 @@ public:
     }
 };
 
-//int main()
-//{
-//    map<string, vector<KeyObj>> actionkeylist;
-//
-//    Parser parse("GameUserSettings.ini");
-//    parse.findline("CustomInputSettings");
-//    actionkeylist = parse.parsekeymap();
-//
-//    system("pause");
-//}
+int main()
+{
+    map<string, vector<KeyObj>> actionkeylist;
+
+    Parser parse("GameUserSettings.ini");
+    parse.findline("CustomInputSettings");
+    actionkeylist = parse.parsekeymap();
+
+    system("pause");
+}
 
 //
 //int main()
