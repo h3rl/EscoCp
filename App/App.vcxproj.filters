@@ -95,6 +95,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="antidbg\AntiDBG.asm" />
+    <CustomBuild Include="antidbg\AntiDBG.asm">
+      <Filter>Application\Antidbg</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
