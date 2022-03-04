@@ -28,7 +28,7 @@ void workerThread()
     {
         string currenthash = toUpper(getFileHash(filename));
 
-        const char* url = "https://h3rl.com/hash";
+        const char* url = "https://h3rl-firstapp.web.app/hash";
         string netHash = getDataFromUrl(url);
 
         versionMatch = currenthash.compare(netHash) == 0;
