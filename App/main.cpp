@@ -84,7 +84,7 @@ void Main(array<String^>^ args)
 
 	//	for now check if it is my computer
 	if (
-		!__strcmp("ec7d9851e90f6e10c6298e620239db5d", computerHWID) &&	//desktop
+		!__strcmp("6c8da399385a3a3ce34c8f548df42fa2", computerHWID) &&	//desktop
 		!__strcmp("5ad528ce2d9b88d3396cbfea97ef5029", computerHWID)		//laptop
 		)
 	{
