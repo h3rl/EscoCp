@@ -285,6 +285,8 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 				//	Grenades
 				case VK_KEY_J:
 				case VK_KEY_H:
+				case VK_KEY_N:
+				case VK_KEY_B:
 				case VK_KEY_G: {
 					_D("SET slot none");
 					slot = NOSLOT;
@@ -303,10 +305,10 @@ LRESULT CALLBACK kbProc(int nCode, WPARAM wParam, LPARAM lParam) {
 					break;
 				}
 				case VK_KEY_C: {
-					if (stance == STANDING || stance == PRONE) {
+					if (stance != CROUCH) {
 						stance = CROUCH;
 					}
-					else if (stance == CROUCH) {
+					else {
 						stance = STANDING;
 					}
 					_D("SET stance " << stringifyStance(stance));
