@@ -1,4 +1,7 @@
 # EscoCp
+
+![preview](https://escohax.web.app/images/prev-1048.png)
+
 Recoilscript, developed mainly for pubg. was planning to sell it, but now i have studies to prioritize.
 Here is the planned shopwebsite if you want to have a look.
 https://escohax.web.app/
