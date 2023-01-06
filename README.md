@@ -7,14 +7,14 @@ basicly gui version of [EscoC](https://github.com/h3rl/EscoC) with gui and furth
 
 ## Description of projects
 
-App - main recoil system, gui, confighandler, hwidcheck, keymanager etc
-App2 - planned remake of app, to make it more optimized
-Console - a console application to show a created hwid to lock program to user
-Downloader - login/update cheat
-Global deps - external libs and other
-Library - hwidgrabber
-NETLoader - another cheat updater
-TempCs/Test - for tests
+-   App - main recoil system, gui, confighandler, hwidcheck, keymanager etc
+-   App2 - planned remake of app, to make it more optimized
+-   Console - a console application to show a created hwid to lock program to user
+-   Downloader - login/update cheat
+-   Global deps - external libs and other
+-   Library - hwidgrabber
+-   NETLoader - another cheat updater
+-   TempCs/Test - for tests
 
 ## External libs
 [nlohmann](https://github.com/nlohmann/json)
