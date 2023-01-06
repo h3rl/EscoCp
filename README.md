@@ -3,6 +3,8 @@ Recoilscript, developed mainly for pubg. was planning to sell it, but now i have
 Here is the planned shopwebsite if you want to have a look.
 https://escohax.web.app/
 
+basicly gui version of [EscoC](https://github.com/h3rl/EscoC) with gui and further features
+
 ## Description of projects
 
 App - main recoil system, gui, confighandler, hwidcheck, keymanager etc
