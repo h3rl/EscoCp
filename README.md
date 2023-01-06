@@ -17,9 +17,9 @@ basicly gui version of [EscoC](https://github.com/h3rl/EscoC) with gui and furth
 -   TempCs/Test - for tests
 
 ## External libs
-[nlohmann](https://github.com/nlohmann/json)
-[wmi](https://github.com/Thomas-Sparber/wmi)
-[antidbg](https://github.com/HackOvert/AntiDBG)
+*   [nlohmann](https://github.com/nlohmann/json)
+*   [wmi](https://github.com/Thomas-Sparber/wmi)
+*   [antidbg](https://github.com/HackOvert/AntiDBG)
 
 probalby wont continue developing this so here u go
 
